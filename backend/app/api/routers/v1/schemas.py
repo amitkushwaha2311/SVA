@@ -30,7 +30,6 @@ class AnalysisResponse(BaseModel):
     id: str
     repository_id: str
     commit_id: str
-    repository_manifest_hash: str
     status: str
     started_at: datetime
     completed_at: Optional[datetime]
