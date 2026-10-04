@@ -1,0 +1,2915 @@
+{
+  "BASELINE_TEST_ONLY": {
+    "metadata": {
+      "run_id": "run_4764e6bb386e2831",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "4764e6bb386e2831",
+      "system": "BASELINE_TEST_ONLY",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "292e971b64d7dbefc3f330de1052534124d08499011877d4f540ba09ada35605"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": 0.75,
+        "numerator": 3,
+        "denominator": 4,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 3. Positive assurance count: 4."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.14285714285714285,
+        "numerator": 1,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 0.2,
+        "numerator": 1,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 0.7142857142857143,
+        "numerator": 5,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 4,
+      "SUPPORTED": 0,
+      "VIOLATED": 1,
+      "UNKNOWN": 7,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 3,
+      "PositiveAssuranceCount": 4,
+      "FAR": "0.75"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "VIOLATED",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": true,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": true,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": true,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "BASELINE_TEST_ONLY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC test-only baseline: looks for 'test_pass' / 'test_fail' signals only. Does not reason about coverage, staleness, ambiguity, or contradictions."
+      }
+    ]
+  },
+  "BASELINE_LLM_JUDGE": {
+    "metadata": {
+      "run_id": "run_fb8efbee53b5f87b",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "fb8efbee53b5f87b",
+      "system": "BASELINE_LLM_JUDGE",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "556fffbf5909a8828e2efbd7c6bf381a24f3b052ed3bd61c9146d00e1294270c"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": 0.375,
+        "numerator": 3,
+        "denominator": 8,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 3. Positive assurance count: 8."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.14285714285714285,
+        "numerator": 1,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 1.0,
+        "numerator": 5,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 0.14285714285714285,
+        "numerator": 1,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 8,
+      "SUPPORTED": 0,
+      "VIOLATED": 1,
+      "UNKNOWN": 3,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 3,
+      "PositiveAssuranceCount": 8,
+      "FAR": "0.38"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "VIOLATED",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": true,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": true,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": true,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "PROVEN",
+        "predicted_ci_action": null,
+        "abstained": false,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "BASELINE_LLM_JUDGE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC mode: simulated LLM-as-judge failure pattern. Does NOT reflect real LLM performance."
+      }
+    ]
+  },
+  "FULL_SVA": {
+    "metadata": {
+      "run_id": "run_76f077e9e9918564",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "76f077e9e9918564",
+      "system": "FULL_SVA",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "46065f926c1b918394803e6e40b10c6791ec1d8281abd822b64acd935c261456"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 0. Positive assurance count: 0."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 1.0,
+        "numerator": 7,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 0,
+      "SUPPORTED": 0,
+      "VIOLATED": 0,
+      "UNKNOWN": 12,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 0,
+      "PositiveAssuranceCount": 0,
+      "FAR": "N/A"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "e07a9beeed0c40959db04c57aaa2816909f6e8af070b19ffa2d4341f874cff19",
+          "82625170ce8e2a1f8f93a4fe0ca7959e2ecf23962f483f0322ac50fd803fd905",
+          "09083ce42e65a982278ccd9418673dd6ca68f59c37932a5b85517343c6b36e7d",
+          "4ba3d216bbce618aada42a3e50b114321aba993558db5c446639d2ef7891fc85",
+          "ebb055d6009986f8c287e519966789890cf5468194ccbee632c4348f3ff090dc"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "983b89758bf258c6e4ed847285a257b417908e5aa0a4107c74b6900eb2cb55a2",
+          "124e150ec134be0f2f9583344364f29c8996474239134141abd89d5de2f3775e",
+          "dd282eb2f1cc6d3cb3d4a43f259e2122c8c0003d52615a50d37d197584dc264d",
+          "331fd1ddcba686eee1eea9121a6cfc0e9f36317b364161ae49a014bb3d607017",
+          "8f1a40747c43e18730ba184e1331f6cdc50046854ff2efa1c2f42dc1f73e5f22"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "90862ada0287812d8356e40219b1f8eeaf06bad16a547381109c17e3cc044ade",
+          "46662acb1e752596df01fd93f96b372143edfe3c557a417a68192b3e0afaac57",
+          "19166497cac9cb1cefeac4b0383da8d369425e802db30bca1cd374a47ff708e6",
+          "15150c1553bbd3f6a78e7848e1e97fd275579c6a1e227a76ec4b9e1f3102147d",
+          "2c6fbb4361d6f4ab7b6a1e34104a88f06952ebd7f1e96ac34e238a894f3cd6a1"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": true,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": true,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "7acb629a5b14dcc1e6c33037d20a028c823fce17e09f3101e4f076799c82adae",
+          "d9bf8f2da352f833655db6201c7c67ddc24ccbf9da12effad20114acd96cd2fa"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "82a25f071578a37fe68e3420bfe1fd817292551ee07ff3c21dceb219d024eb11",
+          "c533905e72daf87ce816fdbec35f27922a078d4b333f9e43186ae27735e53a16",
+          "f27c8f28b11e3b5891b396fe3941c77c087900be903fea864179569670668234",
+          "8c4ca67c494c0b18c1e77db24e895e30f6fdc34df55286508ed7568cedbf3a8b",
+          "1e4ceecb623b3e0aba14f35d02ff5330c1620473657968fa68234abd57515eca"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "abd56ac11b724d1fed7354334d2aaa12e2fcc44ba2c11526863f393f9e0fafc3",
+          "5e8028a9844e589a69d211e63a5381af1e874be915aeccff324a189186e53262"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "ea96f53167215709e767eece00ba63a56b902a4e7f680078be3e2e917b7f4538",
+          "57c96c0c004ed68b0cdd3febb9625b2dc1627217fd262123d499d9a7823b777b",
+          "3cca714998f7a638a9131fb453f9f074dcb860b06a611cb2879e7ead73160c9c",
+          "8108bfd533605f9da7b6f64f889927a2cfd206040553c4c8b5faefd4bf4786b5",
+          "51d185530f085bdf41a899d8725db5ad0ba641364c55f4c0162be03162e7f891"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "30aba43566bd02b7be2458c9ce94a50c6ce51bf0423e05571c77a912551ec526",
+          "8efa014d2c4d0a79d33a9ffc11361deae3b8980514b547574d730aa8633ea45e",
+          "28a81bfd28b67818f51bede73fef3062f97d744a21985d5b1c02fb479e619a22",
+          "ea43b224edc15a55f87b6dfee3ba4f40a8b74a2931b0243aa49350119b7cae61",
+          "b974cfc1aae006a67bc515130bffb176a83195d12b8e9e6e69c0ad71812e3bd6"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "789b5c175492b567877df1c850aa989cff0f0c7befdde1c9b72ac8a9fc98487a",
+          "1dcf970c7ddf9892fb689745aff70f7a49fc78ba0cb249ac82e589a0536628a9",
+          "8e2f8868380d8bbc5d61354c3b96b478a029eefc6c171c2af389598bb4b55413",
+          "9423516ebadd07ea8ca958543babc338b1387855556046f889214953be183ac3",
+          "2c1d0f3ff34c87fcd38f864d52ae2052e64df61d3200ecb71602b2ac8ce9a091"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "FULL_SVA",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "3053c06ec8f1279c018a3871c0d6de8f1d9b13bf33321284cce5d4a7cd240006",
+          "83a5b4cd768f8cefcffa744474b94962bdec27853aebb8b7c8164a3d94c6c5ff",
+          "b6c8a0bc3b3d8cbe0dc03fe0eed7755b2430aa040397f518ca04f47792590a60",
+          "0416afb27562ee63356eb5ae82f7541db1f8eea2fab13a1379ec5754025c1c85",
+          "91c9dc7b0b53bd6fdb83ffb0a532838bb3702f9de2d99c70e4f47821559c922f"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      }
+    ]
+  },
+  "SVA_NO_AMBIGUITY_GATE": {
+    "metadata": {
+      "run_id": "run_800951979472e15a",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "800951979472e15a",
+      "system": "SVA_NO_AMBIGUITY_GATE",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "5a4964b905dfa6a1b3fd4e4794191b8d0be980c411e7f82f7bd41d2b6b1abfab"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 0. Positive assurance count: 0."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 1.0,
+        "numerator": 7,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 0,
+      "SUPPORTED": 0,
+      "VIOLATED": 0,
+      "UNKNOWN": 12,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 0,
+      "PositiveAssuranceCount": 0,
+      "FAR": "N/A"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "e07a9beeed0c40959db04c57aaa2816909f6e8af070b19ffa2d4341f874cff19",
+          "82625170ce8e2a1f8f93a4fe0ca7959e2ecf23962f483f0322ac50fd803fd905",
+          "09083ce42e65a982278ccd9418673dd6ca68f59c37932a5b85517343c6b36e7d",
+          "4ba3d216bbce618aada42a3e50b114321aba993558db5c446639d2ef7891fc85",
+          "ebb055d6009986f8c287e519966789890cf5468194ccbee632c4348f3ff090dc"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "983b89758bf258c6e4ed847285a257b417908e5aa0a4107c74b6900eb2cb55a2",
+          "124e150ec134be0f2f9583344364f29c8996474239134141abd89d5de2f3775e",
+          "dd282eb2f1cc6d3cb3d4a43f259e2122c8c0003d52615a50d37d197584dc264d",
+          "331fd1ddcba686eee1eea9121a6cfc0e9f36317b364161ae49a014bb3d607017",
+          "8f1a40747c43e18730ba184e1331f6cdc50046854ff2efa1c2f42dc1f73e5f22"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "90862ada0287812d8356e40219b1f8eeaf06bad16a547381109c17e3cc044ade",
+          "46662acb1e752596df01fd93f96b372143edfe3c557a417a68192b3e0afaac57",
+          "19166497cac9cb1cefeac4b0383da8d369425e802db30bca1cd374a47ff708e6",
+          "15150c1553bbd3f6a78e7848e1e97fd275579c6a1e227a76ec4b9e1f3102147d",
+          "2c6fbb4361d6f4ab7b6a1e34104a88f06952ebd7f1e96ac34e238a894f3cd6a1"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "fa5804f6bb850d6de59fcf4eeed75d7616f71206036335e9ae8c538879cc99aa",
+          "a44cfca98963c6c779ab8ea787116703243bf922fca49a32567090bc5715e72b",
+          "4617c7166ff2bc5fecffa3a6e9ff4e9685cd1276d90d90226a42c518d3ed67f3",
+          "349fad96a56c76ea802bff39134703cd16fc1901e046e06d83c1c9b74b2af041"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "41aab68f166b3124a4ed0f300f6e4cdc4c108b5e0ec469b1c1f013d67a8f4f5f",
+          "7efcc1fc0caa798fc60a2acce49ace70e5d7e4ad722ae2b044a45ec5e4908c42",
+          "f870aaca0b23dff02beed384e87412d78afe9cf5ae5f61966862d5ee4bfa26ba",
+          "49e081f8b9bf4d5b270974e0f2f1f4261c18456a9e989cda4fb5aaa825bd64af",
+          "c886a5e49ebcd76f5c40eac2e6e4ef009bb8aaeb3895cb858090ecd2f52f9efe"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "7acb629a5b14dcc1e6c33037d20a028c823fce17e09f3101e4f076799c82adae",
+          "d9bf8f2da352f833655db6201c7c67ddc24ccbf9da12effad20114acd96cd2fa"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "82a25f071578a37fe68e3420bfe1fd817292551ee07ff3c21dceb219d024eb11",
+          "c533905e72daf87ce816fdbec35f27922a078d4b333f9e43186ae27735e53a16",
+          "f27c8f28b11e3b5891b396fe3941c77c087900be903fea864179569670668234",
+          "8c4ca67c494c0b18c1e77db24e895e30f6fdc34df55286508ed7568cedbf3a8b",
+          "1e4ceecb623b3e0aba14f35d02ff5330c1620473657968fa68234abd57515eca"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "abd56ac11b724d1fed7354334d2aaa12e2fcc44ba2c11526863f393f9e0fafc3",
+          "5e8028a9844e589a69d211e63a5381af1e874be915aeccff324a189186e53262"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "ea96f53167215709e767eece00ba63a56b902a4e7f680078be3e2e917b7f4538",
+          "57c96c0c004ed68b0cdd3febb9625b2dc1627217fd262123d499d9a7823b777b",
+          "3cca714998f7a638a9131fb453f9f074dcb860b06a611cb2879e7ead73160c9c",
+          "8108bfd533605f9da7b6f64f889927a2cfd206040553c4c8b5faefd4bf4786b5",
+          "51d185530f085bdf41a899d8725db5ad0ba641364c55f4c0162be03162e7f891"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "30aba43566bd02b7be2458c9ce94a50c6ce51bf0423e05571c77a912551ec526",
+          "8efa014d2c4d0a79d33a9ffc11361deae3b8980514b547574d730aa8633ea45e",
+          "28a81bfd28b67818f51bede73fef3062f97d744a21985d5b1c02fb479e619a22",
+          "ea43b224edc15a55f87b6dfee3ba4f40a8b74a2931b0243aa49350119b7cae61",
+          "b974cfc1aae006a67bc515130bffb176a83195d12b8e9e6e69c0ad71812e3bd6"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "789b5c175492b567877df1c850aa989cff0f0c7befdde1c9b72ac8a9fc98487a",
+          "1dcf970c7ddf9892fb689745aff70f7a49fc78ba0cb249ac82e589a0536628a9",
+          "8e2f8868380d8bbc5d61354c3b96b478a029eefc6c171c2af389598bb4b55413",
+          "9423516ebadd07ea8ca958543babc338b1387855556046f889214953be183ac3",
+          "2c1d0f3ff34c87fcd38f864d52ae2052e64df61d3200ecb71602b2ac8ce9a091"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "3053c06ec8f1279c018a3871c0d6de8f1d9b13bf33321284cce5d4a7cd240006",
+          "83a5b4cd768f8cefcffa744474b94962bdec27853aebb8b7c8164a3d94c6c5ff",
+          "b6c8a0bc3b3d8cbe0dc03fe0eed7755b2430aa040397f518ca04f47792590a60",
+          "0416afb27562ee63356eb5ae82f7541db1f8eea2fab13a1379ec5754025c1c85",
+          "91c9dc7b0b53bd6fdb83ffb0a532838bb3702f9de2d99c70e4f47821559c922f"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      }
+    ]
+  },
+  "SVA_NO_NEGATIVE_OBLIGATIONS": {
+    "metadata": {
+      "run_id": "run_d04dd4431805eb96",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "d04dd4431805eb96",
+      "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "a73776f08572277b58e55edfd22f895084bc81863187142490597f4ac6daffa9"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 0. Positive assurance count: 0."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 1.0,
+        "numerator": 7,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 0,
+      "SUPPORTED": 0,
+      "VIOLATED": 0,
+      "UNKNOWN": 12,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 0,
+      "PositiveAssuranceCount": 0,
+      "FAR": "N/A"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "e07a9beeed0c40959db04c57aaa2816909f6e8af070b19ffa2d4341f874cff19",
+          "82625170ce8e2a1f8f93a4fe0ca7959e2ecf23962f483f0322ac50fd803fd905",
+          "09083ce42e65a982278ccd9418673dd6ca68f59c37932a5b85517343c6b36e7d",
+          "4ba3d216bbce618aada42a3e50b114321aba993558db5c446639d2ef7891fc85"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "983b89758bf258c6e4ed847285a257b417908e5aa0a4107c74b6900eb2cb55a2",
+          "124e150ec134be0f2f9583344364f29c8996474239134141abd89d5de2f3775e",
+          "dd282eb2f1cc6d3cb3d4a43f259e2122c8c0003d52615a50d37d197584dc264d",
+          "331fd1ddcba686eee1eea9121a6cfc0e9f36317b364161ae49a014bb3d607017"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "90862ada0287812d8356e40219b1f8eeaf06bad16a547381109c17e3cc044ade",
+          "46662acb1e752596df01fd93f96b372143edfe3c557a417a68192b3e0afaac57",
+          "19166497cac9cb1cefeac4b0383da8d369425e802db30bca1cd374a47ff708e6",
+          "15150c1553bbd3f6a78e7848e1e97fd275579c6a1e227a76ec4b9e1f3102147d"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": true,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": true,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "7acb629a5b14dcc1e6c33037d20a028c823fce17e09f3101e4f076799c82adae",
+          "d9bf8f2da352f833655db6201c7c67ddc24ccbf9da12effad20114acd96cd2fa"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "82a25f071578a37fe68e3420bfe1fd817292551ee07ff3c21dceb219d024eb11",
+          "c533905e72daf87ce816fdbec35f27922a078d4b333f9e43186ae27735e53a16",
+          "f27c8f28b11e3b5891b396fe3941c77c087900be903fea864179569670668234",
+          "8c4ca67c494c0b18c1e77db24e895e30f6fdc34df55286508ed7568cedbf3a8b"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "abd56ac11b724d1fed7354334d2aaa12e2fcc44ba2c11526863f393f9e0fafc3",
+          "5e8028a9844e589a69d211e63a5381af1e874be915aeccff324a189186e53262"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "ea96f53167215709e767eece00ba63a56b902a4e7f680078be3e2e917b7f4538",
+          "57c96c0c004ed68b0cdd3febb9625b2dc1627217fd262123d499d9a7823b777b",
+          "3cca714998f7a638a9131fb453f9f074dcb860b06a611cb2879e7ead73160c9c",
+          "8108bfd533605f9da7b6f64f889927a2cfd206040553c4c8b5faefd4bf4786b5"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "30aba43566bd02b7be2458c9ce94a50c6ce51bf0423e05571c77a912551ec526",
+          "8efa014d2c4d0a79d33a9ffc11361deae3b8980514b547574d730aa8633ea45e",
+          "28a81bfd28b67818f51bede73fef3062f97d744a21985d5b1c02fb479e619a22",
+          "ea43b224edc15a55f87b6dfee3ba4f40a8b74a2931b0243aa49350119b7cae61"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "789b5c175492b567877df1c850aa989cff0f0c7befdde1c9b72ac8a9fc98487a",
+          "1dcf970c7ddf9892fb689745aff70f7a49fc78ba0cb249ac82e589a0536628a9",
+          "8e2f8868380d8bbc5d61354c3b96b478a029eefc6c171c2af389598bb4b55413",
+          "9423516ebadd07ea8ca958543babc338b1387855556046f889214953be183ac3"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "3053c06ec8f1279c018a3871c0d6de8f1d9b13bf33321284cce5d4a7cd240006",
+          "83a5b4cd768f8cefcffa744474b94962bdec27853aebb8b7c8164a3d94c6c5ff",
+          "b6c8a0bc3b3d8cbe0dc03fe0eed7755b2430aa040397f518ca04f47792590a60",
+          "0416afb27562ee63356eb5ae82f7541db1f8eea2fab13a1379ec5754025c1c85"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      }
+    ]
+  },
+  "SVA_NO_EVIDENCE_INTEGRITY": {
+    "metadata": {
+      "run_id": "run_61b00c3be02991dc",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "61b00c3be02991dc",
+      "system": "SVA_NO_EVIDENCE_INTEGRITY",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "a360d9d5b02ee5d712e28bb197d61308e0ee456c26e1f5ff8429ad2fd77b0be9"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 0. Positive assurance count: 0."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 1.0,
+        "numerator": 7,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 0,
+      "SUPPORTED": 0,
+      "VIOLATED": 0,
+      "UNKNOWN": 12,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 0,
+      "PositiveAssuranceCount": 0,
+      "FAR": "N/A"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "e07a9beeed0c40959db04c57aaa2816909f6e8af070b19ffa2d4341f874cff19",
+          "82625170ce8e2a1f8f93a4fe0ca7959e2ecf23962f483f0322ac50fd803fd905",
+          "09083ce42e65a982278ccd9418673dd6ca68f59c37932a5b85517343c6b36e7d",
+          "4ba3d216bbce618aada42a3e50b114321aba993558db5c446639d2ef7891fc85",
+          "ebb055d6009986f8c287e519966789890cf5468194ccbee632c4348f3ff090dc"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "983b89758bf258c6e4ed847285a257b417908e5aa0a4107c74b6900eb2cb55a2",
+          "124e150ec134be0f2f9583344364f29c8996474239134141abd89d5de2f3775e",
+          "dd282eb2f1cc6d3cb3d4a43f259e2122c8c0003d52615a50d37d197584dc264d",
+          "331fd1ddcba686eee1eea9121a6cfc0e9f36317b364161ae49a014bb3d607017",
+          "8f1a40747c43e18730ba184e1331f6cdc50046854ff2efa1c2f42dc1f73e5f22"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "90862ada0287812d8356e40219b1f8eeaf06bad16a547381109c17e3cc044ade",
+          "46662acb1e752596df01fd93f96b372143edfe3c557a417a68192b3e0afaac57",
+          "19166497cac9cb1cefeac4b0383da8d369425e802db30bca1cd374a47ff708e6",
+          "15150c1553bbd3f6a78e7848e1e97fd275579c6a1e227a76ec4b9e1f3102147d",
+          "2c6fbb4361d6f4ab7b6a1e34104a88f06952ebd7f1e96ac34e238a894f3cd6a1"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": true,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": true,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "7acb629a5b14dcc1e6c33037d20a028c823fce17e09f3101e4f076799c82adae",
+          "d9bf8f2da352f833655db6201c7c67ddc24ccbf9da12effad20114acd96cd2fa"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "82a25f071578a37fe68e3420bfe1fd817292551ee07ff3c21dceb219d024eb11",
+          "c533905e72daf87ce816fdbec35f27922a078d4b333f9e43186ae27735e53a16",
+          "f27c8f28b11e3b5891b396fe3941c77c087900be903fea864179569670668234",
+          "8c4ca67c494c0b18c1e77db24e895e30f6fdc34df55286508ed7568cedbf3a8b",
+          "1e4ceecb623b3e0aba14f35d02ff5330c1620473657968fa68234abd57515eca"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "abd56ac11b724d1fed7354334d2aaa12e2fcc44ba2c11526863f393f9e0fafc3",
+          "5e8028a9844e589a69d211e63a5381af1e874be915aeccff324a189186e53262"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "ea96f53167215709e767eece00ba63a56b902a4e7f680078be3e2e917b7f4538",
+          "57c96c0c004ed68b0cdd3febb9625b2dc1627217fd262123d499d9a7823b777b",
+          "3cca714998f7a638a9131fb453f9f074dcb860b06a611cb2879e7ead73160c9c",
+          "8108bfd533605f9da7b6f64f889927a2cfd206040553c4c8b5faefd4bf4786b5",
+          "51d185530f085bdf41a899d8725db5ad0ba641364c55f4c0162be03162e7f891"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "30aba43566bd02b7be2458c9ce94a50c6ce51bf0423e05571c77a912551ec526",
+          "8efa014d2c4d0a79d33a9ffc11361deae3b8980514b547574d730aa8633ea45e",
+          "28a81bfd28b67818f51bede73fef3062f97d744a21985d5b1c02fb479e619a22",
+          "ea43b224edc15a55f87b6dfee3ba4f40a8b74a2931b0243aa49350119b7cae61",
+          "b974cfc1aae006a67bc515130bffb176a83195d12b8e9e6e69c0ad71812e3bd6"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "789b5c175492b567877df1c850aa989cff0f0c7befdde1c9b72ac8a9fc98487a",
+          "1dcf970c7ddf9892fb689745aff70f7a49fc78ba0cb249ac82e589a0536628a9",
+          "8e2f8868380d8bbc5d61354c3b96b478a029eefc6c171c2af389598bb4b55413",
+          "9423516ebadd07ea8ca958543babc338b1387855556046f889214953be183ac3",
+          "2c1d0f3ff34c87fcd38f864d52ae2052e64df61d3200ecb71602b2ac8ce9a091"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "3053c06ec8f1279c018a3871c0d6de8f1d9b13bf33321284cce5d4a7cd240006",
+          "83a5b4cd768f8cefcffa744474b94962bdec27853aebb8b7c8164a3d94c6c5ff",
+          "b6c8a0bc3b3d8cbe0dc03fe0eed7755b2430aa040397f518ca04f47792590a60",
+          "0416afb27562ee63356eb5ae82f7541db1f8eea2fab13a1379ec5754025c1c85",
+          "91c9dc7b0b53bd6fdb83ffb0a532838bb3702f9de2d99c70e4f47821559c922f"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      }
+    ]
+  },
+  "SVA_NO_STALE_DETECTION": {
+    "metadata": {
+      "run_id": "run_110506bc59001068",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "110506bc59001068",
+      "system": "SVA_NO_STALE_DETECTION",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "ff53c37e729eac8d3e5eb436b6d6c8457b4a69e4c0311f978b210ab82e43ef46"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 0. Positive assurance count: 0."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 1.0,
+        "numerator": 7,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 0,
+      "SUPPORTED": 0,
+      "VIOLATED": 0,
+      "UNKNOWN": 12,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 0,
+      "PositiveAssuranceCount": 0,
+      "FAR": "N/A"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "e07a9beeed0c40959db04c57aaa2816909f6e8af070b19ffa2d4341f874cff19",
+          "82625170ce8e2a1f8f93a4fe0ca7959e2ecf23962f483f0322ac50fd803fd905",
+          "09083ce42e65a982278ccd9418673dd6ca68f59c37932a5b85517343c6b36e7d",
+          "4ba3d216bbce618aada42a3e50b114321aba993558db5c446639d2ef7891fc85",
+          "ebb055d6009986f8c287e519966789890cf5468194ccbee632c4348f3ff090dc"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "983b89758bf258c6e4ed847285a257b417908e5aa0a4107c74b6900eb2cb55a2",
+          "124e150ec134be0f2f9583344364f29c8996474239134141abd89d5de2f3775e",
+          "dd282eb2f1cc6d3cb3d4a43f259e2122c8c0003d52615a50d37d197584dc264d",
+          "331fd1ddcba686eee1eea9121a6cfc0e9f36317b364161ae49a014bb3d607017",
+          "8f1a40747c43e18730ba184e1331f6cdc50046854ff2efa1c2f42dc1f73e5f22"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "90862ada0287812d8356e40219b1f8eeaf06bad16a547381109c17e3cc044ade",
+          "46662acb1e752596df01fd93f96b372143edfe3c557a417a68192b3e0afaac57",
+          "19166497cac9cb1cefeac4b0383da8d369425e802db30bca1cd374a47ff708e6",
+          "15150c1553bbd3f6a78e7848e1e97fd275579c6a1e227a76ec4b9e1f3102147d",
+          "2c6fbb4361d6f4ab7b6a1e34104a88f06952ebd7f1e96ac34e238a894f3cd6a1"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": true,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": true,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "7acb629a5b14dcc1e6c33037d20a028c823fce17e09f3101e4f076799c82adae",
+          "d9bf8f2da352f833655db6201c7c67ddc24ccbf9da12effad20114acd96cd2fa"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "82a25f071578a37fe68e3420bfe1fd817292551ee07ff3c21dceb219d024eb11",
+          "c533905e72daf87ce816fdbec35f27922a078d4b333f9e43186ae27735e53a16",
+          "f27c8f28b11e3b5891b396fe3941c77c087900be903fea864179569670668234",
+          "8c4ca67c494c0b18c1e77db24e895e30f6fdc34df55286508ed7568cedbf3a8b",
+          "1e4ceecb623b3e0aba14f35d02ff5330c1620473657968fa68234abd57515eca"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "abd56ac11b724d1fed7354334d2aaa12e2fcc44ba2c11526863f393f9e0fafc3",
+          "5e8028a9844e589a69d211e63a5381af1e874be915aeccff324a189186e53262"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "ea96f53167215709e767eece00ba63a56b902a4e7f680078be3e2e917b7f4538",
+          "57c96c0c004ed68b0cdd3febb9625b2dc1627217fd262123d499d9a7823b777b",
+          "3cca714998f7a638a9131fb453f9f074dcb860b06a611cb2879e7ead73160c9c",
+          "8108bfd533605f9da7b6f64f889927a2cfd206040553c4c8b5faefd4bf4786b5",
+          "51d185530f085bdf41a899d8725db5ad0ba641364c55f4c0162be03162e7f891"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "30aba43566bd02b7be2458c9ce94a50c6ce51bf0423e05571c77a912551ec526",
+          "8efa014d2c4d0a79d33a9ffc11361deae3b8980514b547574d730aa8633ea45e",
+          "28a81bfd28b67818f51bede73fef3062f97d744a21985d5b1c02fb479e619a22",
+          "ea43b224edc15a55f87b6dfee3ba4f40a8b74a2931b0243aa49350119b7cae61",
+          "b974cfc1aae006a67bc515130bffb176a83195d12b8e9e6e69c0ad71812e3bd6"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "789b5c175492b567877df1c850aa989cff0f0c7befdde1c9b72ac8a9fc98487a",
+          "1dcf970c7ddf9892fb689745aff70f7a49fc78ba0cb249ac82e589a0536628a9",
+          "8e2f8868380d8bbc5d61354c3b96b478a029eefc6c171c2af389598bb4b55413",
+          "9423516ebadd07ea8ca958543babc338b1387855556046f889214953be183ac3",
+          "2c1d0f3ff34c87fcd38f864d52ae2052e64df61d3200ecb71602b2ac8ce9a091"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "SVA_NO_STALE_DETECTION",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [
+          "3053c06ec8f1279c018a3871c0d6de8f1d9b13bf33321284cce5d4a7cd240006",
+          "83a5b4cd768f8cefcffa744474b94962bdec27853aebb8b7c8164a3d94c6c5ff",
+          "b6c8a0bc3b3d8cbe0dc03fe0eed7755b2430aa040397f518ca04f47792590a60",
+          "0416afb27562ee63356eb5ae82f7541db1f8eea2fab13a1379ec5754025c1c85",
+          "91c9dc7b0b53bd6fdb83ffb0a532838bb3702f9de2d99c70e4f47821559c922f"
+        ],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      }
+    ]
+  },
+  "SVA_NO_SKEPTIC": {
+    "metadata": {
+      "run_id": "run_76e8dab1735bd706",
+      "benchmark_version": "0.1.0",
+      "case_ids": [
+        "BENCH-A-001",
+        "BENCH-B-001",
+        "BENCH-C-001",
+        "BENCH-D-001",
+        "BENCH-E-001",
+        "BENCH-F-001",
+        "BENCH-G-001",
+        "BENCH-H-001",
+        "BENCH-K-001",
+        "BENCH-L-001",
+        "BENCH-N-001",
+        "BENCH-Q-001"
+      ],
+      "sva_commit": "phase18d",
+      "configuration_hash": "76e8dab1735bd706",
+      "system": "SVA_NO_SKEPTIC",
+      "evaluation_mode": "DETERMINISTIC",
+      "model_provider": null,
+      "model_name": null,
+      "model_version": null,
+      "prompt_version": null,
+      "random_seed": 42,
+      "tool_versions": {
+        "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+        "platform": "Windows-11-10.0.26200-SP0"
+      },
+      "environment_fingerprint": null,
+      "result_hash": "67fbd13a2c70f1959d111ee0100f94db64d6279ecde0df7f94ec8b895d3af0bc"
+    },
+    "metrics": [
+      {
+        "name": "False Assurance Rate (FAR)",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+        "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+        "notes": "False assurance count: 0. Positive assurance count: 0."
+      },
+      {
+        "name": "Violation Recall",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 7,
+        "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+        "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+        "notes": ""
+      },
+      {
+        "name": "Violation Precision",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+        "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+        "notes": ""
+      },
+      {
+        "name": "Correct Positive Assurance Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 5,
+        "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+        "notes": ""
+      },
+      {
+        "name": "Ambiguity Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+        "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+        "notes": ""
+      },
+      {
+        "name": "Contradiction Recall",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+        "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+        "notes": ""
+      },
+      {
+        "name": "Phantom Requirement Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+        "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+        "notes": ""
+      },
+      {
+        "name": "Stale Evidence Detection Rate",
+        "value": 1.0,
+        "numerator": 1,
+        "denominator": 1,
+        "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+        "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+        "notes": ""
+      },
+      {
+        "name": "Semantic Drift Detection Rate",
+        "value": 0.0,
+        "numerator": 0,
+        "denominator": 1,
+        "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+        "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+        "notes": ""
+      },
+      {
+        "name": "Counterexample Discovery Rate",
+        "value": null,
+        "numerator": 0,
+        "denominator": 0,
+        "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+        "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+        "notes": ""
+      },
+      {
+        "name": "Appropriate Uncertainty Rate",
+        "value": 1.0,
+        "numerator": 7,
+        "denominator": 7,
+        "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+        "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+        "notes": ""
+      }
+    ],
+    "aggregated": {
+      "PROVEN": 0,
+      "SUPPORTED": 0,
+      "VIOLATED": 0,
+      "UNKNOWN": 12,
+      "INCONCLUSIVE": 0,
+      "STALE": 0,
+      "UNSUPPORTED": 0,
+      "FalseAssuranceCount": 0,
+      "PositiveAssuranceCount": 0,
+      "FAR": "N/A"
+    },
+    "cases": [
+      {
+        "case_id": "BENCH-A-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-B-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-C-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-D-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": true,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-E-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": true,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-F-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-G-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-H-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-K-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-L-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": false,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-N-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": false,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      },
+      {
+        "case_id": "BENCH-Q-001",
+        "system": "SVA_NO_SKEPTIC",
+        "predicted_assurance_state": "UNKNOWN",
+        "predicted_ci_action": null,
+        "abstained": true,
+        "ambiguity_detected": false,
+        "contradiction_detected": false,
+        "evidence_refs": [],
+        "counterexample_refs": [],
+        "is_false_assurance": false,
+        "missed_violation": true,
+        "correct_assurance": true,
+        "evaluator_notes": "DETERMINISTIC FULL_SVA pipeline execution."
+      }
+    ]
+  }
+}

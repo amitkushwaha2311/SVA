@@ -1,0 +1,1382 @@
+{
+  "experiment_id": "13A_initial",
+  "benchmark_version": "0.1.0",
+  "timestamp": "2026-09-16T18:16:27.318324+00:00",
+  "cases_evaluated": 12,
+  "systems": {
+    "BASELINE_TEST_ONLY": {
+      "metadata": {
+        "run_id": "run_4764e6bb386e2831",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "4764e6bb386e2831",
+        "system": "BASELINE_TEST_ONLY",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "292e971b64d7dbefc3f330de1052534124d08499011877d4f540ba09ada35605"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": 0.75,
+          "numerator": 3,
+          "denominator": 4,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 3. Positive assurance count: 4."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.14285714285714285,
+          "numerator": 1,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 0.2,
+          "numerator": 1,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 0.7142857142857143,
+          "numerator": 5,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-C-001",
+          "type": "FALSE_ASSURANCE",
+          "category": "POSITIVE_EVIDENCE_OVERGENERALIZATION"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "FALSE_ASSURANCE",
+          "category": "STALE_EVIDENCE_ACCEPTED"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "FALSE_ASSURANCE",
+          "category": "NEGATIVE_BEHAVIOR_MISSED"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    },
+    "BASELINE_LLM_JUDGE": {
+      "metadata": {
+        "run_id": "run_fb8efbee53b5f87b",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "fb8efbee53b5f87b",
+        "system": "BASELINE_LLM_JUDGE",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "556fffbf5909a8828e2efbd7c6bf381a24f3b052ed3bd61c9146d00e1294270c"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": 0.375,
+          "numerator": 3,
+          "denominator": 8,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 3. Positive assurance count: 8."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.14285714285714285,
+          "numerator": 1,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 1.0,
+          "numerator": 5,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 0.14285714285714285,
+          "numerator": 1,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-C-001",
+          "type": "FALSE_ASSURANCE",
+          "category": "POSITIVE_EVIDENCE_OVERGENERALIZATION"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "FALSE_ASSURANCE",
+          "category": "STALE_EVIDENCE_ACCEPTED"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "FALSE_ASSURANCE",
+          "category": "INTENT_MISINTERPRETATION"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    },
+    "FULL_SVA": {
+      "metadata": {
+        "run_id": "run_76f077e9e9918564",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "76f077e9e9918564",
+        "system": "FULL_SVA",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "46065f926c1b918394803e6e40b10c6791ec1d8281abd822b64acd935c261456"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 0. Positive assurance count: 0."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 1.0,
+          "numerator": 7,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-B-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-C-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    },
+    "SVA_NO_AMBIGUITY_GATE": {
+      "metadata": {
+        "run_id": "run_800951979472e15a",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "800951979472e15a",
+        "system": "SVA_NO_AMBIGUITY_GATE",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "5a4964b905dfa6a1b3fd4e4794191b8d0be980c411e7f82f7bd41d2b6b1abfab"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 0. Positive assurance count: 0."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 1.0,
+          "numerator": 7,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-B-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-C-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    },
+    "SVA_NO_NEGATIVE_OBLIGATIONS": {
+      "metadata": {
+        "run_id": "run_d04dd4431805eb96",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "d04dd4431805eb96",
+        "system": "SVA_NO_NEGATIVE_OBLIGATIONS",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "a73776f08572277b58e55edfd22f895084bc81863187142490597f4ac6daffa9"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 0. Positive assurance count: 0."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 1.0,
+          "numerator": 7,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-B-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-C-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    },
+    "SVA_NO_EVIDENCE_INTEGRITY": {
+      "metadata": {
+        "run_id": "run_61b00c3be02991dc",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "61b00c3be02991dc",
+        "system": "SVA_NO_EVIDENCE_INTEGRITY",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "a360d9d5b02ee5d712e28bb197d61308e0ee456c26e1f5ff8429ad2fd77b0be9"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 0. Positive assurance count: 0."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 1.0,
+          "numerator": 7,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-B-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-C-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    },
+    "SVA_NO_STALE_DETECTION": {
+      "metadata": {
+        "run_id": "run_110506bc59001068",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "110506bc59001068",
+        "system": "SVA_NO_STALE_DETECTION",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "ff53c37e729eac8d3e5eb436b6d6c8457b4a69e4c0311f978b210ab82e43ef46"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 0. Positive assurance count: 0."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 1.0,
+          "numerator": 7,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-B-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-C-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    },
+    "SVA_NO_SKEPTIC": {
+      "metadata": {
+        "run_id": "run_76e8dab1735bd706",
+        "benchmark_version": "0.1.0",
+        "case_ids": [
+          "BENCH-A-001",
+          "BENCH-B-001",
+          "BENCH-C-001",
+          "BENCH-D-001",
+          "BENCH-E-001",
+          "BENCH-F-001",
+          "BENCH-G-001",
+          "BENCH-H-001",
+          "BENCH-K-001",
+          "BENCH-L-001",
+          "BENCH-N-001",
+          "BENCH-Q-001"
+        ],
+        "sva_commit": "phase13a",
+        "configuration_hash": "76e8dab1735bd706",
+        "system": "SVA_NO_SKEPTIC",
+        "evaluation_mode": "DETERMINISTIC",
+        "model_provider": null,
+        "model_name": null,
+        "model_version": null,
+        "prompt_version": null,
+        "random_seed": 42,
+        "tool_versions": {
+          "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+          "platform": "Windows-11-10.0.26200-SP0"
+        },
+        "environment_fingerprint": null,
+        "result_hash": "67fbd13a2c70f1959d111ee0100f94db64d6279ecde0df7f94ec8b895d3af0bc"
+      },
+      "metrics": [
+        {
+          "name": "False Assurance Rate (FAR)",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of positive assurance decisions that were incorrect. Lower is better. 0.0 is ideal but trivially achieved by abstaining.",
+          "limitation": "A system that always abstains achieves FAR=None (undefined). Must be read alongside Violation Recall and Correct Assurance Rate.",
+          "notes": "False assurance count: 0. Positive assurance count: 0."
+        },
+        {
+          "name": "Violation Recall",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 7,
+          "interpretation": "Proportion of true violations the system correctly identified. Higher is better. Must be read alongside FAR to prevent gaming.",
+          "limitation": "A system that always returns VIOLATED achieves recall=1.0 while also having many false assurances for correct implementations.",
+          "notes": ""
+        },
+        {
+          "name": "Violation Precision",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Of all cases where the system said VIOLATED, what fraction actually were. Higher is better.",
+          "limitation": "A system that never predicts VIOLATED has precision=None. Must be read alongside Violation Recall.",
+          "notes": ""
+        },
+        {
+          "name": "Correct Positive Assurance Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 5,
+          "interpretation": "Proportion of correct implementations that the system correctly assured. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN achieves 0. Must be read alongside FAR.",
+          "notes": ""
+        },
+        {
+          "name": "Ambiguity Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of genuinely ambiguous requirements that the system flagged as ambiguous. Higher is better.",
+          "limitation": "A system that always says ambiguous would achieve recall=1.0 at the cost of enormous false-positive ambiguity signals.",
+          "notes": ""
+        },
+        {
+          "name": "Contradiction Recall",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of contradictory requirements that the system surfaced. Higher is better.",
+          "limitation": "May be zero if the benchmark dataset has few contradiction cases.",
+          "notes": ""
+        },
+        {
+          "name": "Phantom Requirement Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of phantom requirements that were incorrectly treated as confirmed, producing positive assurance without human confirmation. Lower is better. 0.0 is ideal.",
+          "limitation": "Requires at least one Category F case to be meaningful. May be undefined with zero F cases.",
+          "notes": ""
+        },
+        {
+          "name": "Stale Evidence Detection Rate",
+          "value": 1.0,
+          "numerator": 1,
+          "denominator": 1,
+          "interpretation": "Proportion of stale-evidence cases where the system correctly declined to produce a positive assurance. Higher is better.",
+          "limitation": "Does not measure whether the system explicitly named the evidence as stale; only that it avoided a false positive assurance.",
+          "notes": ""
+        },
+        {
+          "name": "Semantic Drift Detection Rate",
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 1,
+          "interpretation": "Proportion of semantic drift cases where the system triggered REVIEW or BLOCK. Higher is better.",
+          "limitation": "Requires Category Q cases to be meaningful. A system without drift analysis will score 0.",
+          "notes": ""
+        },
+        {
+          "name": "Counterexample Discovery Rate",
+          "value": null,
+          "numerator": 0,
+          "denominator": 0,
+          "interpretation": "Proportion of category J cases where the system proposed at least one counterexample. Higher is better. Note: proposed counterexamples are NOT confirmed violations.",
+          "limitation": "A system can produce many invalid counterexamples and still score high. Counterexample precision is a future metric.",
+          "notes": ""
+        },
+        {
+          "name": "Appropriate Uncertainty Rate",
+          "value": 1.0,
+          "numerator": 7,
+          "denominator": 7,
+          "interpretation": "Proportion of cases expecting UNKNOWN/INCONCLUSIVE where the system correctly returned an uncertain verdict. Higher is better.",
+          "limitation": "A system that always returns UNKNOWN scores 1.0 here but is useless overall. Must be read with Correct Positive Assurance Rate.",
+          "notes": ""
+        }
+      ],
+      "failure_analysis": [
+        {
+          "case_id": "BENCH-B-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-C-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-G-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-H-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-K-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-N-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "case_id": "BENCH-Q-001",
+          "type": "MISSED_VIOLATION",
+          "category": "INSUFFICIENT_EVIDENCE"
+        }
+      ]
+    }
+  }
+}

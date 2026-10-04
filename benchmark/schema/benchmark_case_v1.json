@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sva-bench/schema/benchmark_case/v1",
+  "title": "SVA-Bench Case Schema v1",
+  "type": "object",
+  "required": ["case_id", "version", "category", "requirement_text", "repository_fixture", "ground_truth"],
+  "properties": {
+    "case_id": {"type": "string"},
+    "version": {"type": "string"},
+    "category": {"type": "string"},
+    "difficulty": {"type": "string"},
+    "requirement_text": {"type": "string"},
+    "requirement_sources": {"type": "array", "items": {"type": "string"}},
+    "repository_fixture": {
+      "type": "object",
+      "required": ["fixture_id", "description", "files"],
+      "properties": {
+        "fixture_id": {"type": "string"},
+        "description": {"type": "string"},
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["relative_path", "content"],
+            "properties": {
+              "relative_path": {"type": "string"},
+              "content": {"type": "string"},
+              "description": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "ground_truth": {
+      "type": "object",
+      "required": ["intent_truth", "behavioral_truth", "known_violation", "evidence_sufficiency_truth", "expected_assurance_state", "authored_by", "reviewed_by"],
+      "properties": {
+        "intent_truth": {"type": "string"},
+        "behavioral_truth": {"type": "string"},
+        "has_ambiguity": {"type": "boolean"},
+        "ambiguity_interpretations": {"type": "array", "items": {"type": "string"}},
+        "has_contradiction": {"type": "boolean"},
+        "contradiction_pair": {"type": "array", "items": {"type": "string"}},
+        "known_violation": {"type": "boolean"},
+        "evidence_sufficiency_truth": {"type": "string", "enum": ["SUFFICIENT", "INSUFFICIENT", "UNKNOWN"]},
+        "expected_assurance_state": {"type": "string"},
+        "authored_by": {"type": "string"},
+        "reviewed_by": {"type": "string"},
+        "ground_truth_version": {"type": "string"}
+      }
+    },
+    "mutations": {"type": "array"},
+    "notes": {"type": "string"},
+    "metadata": {"type": "object"}
+  }
+}

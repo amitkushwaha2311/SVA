@@ -1,0 +1,23 @@
+{
+  "experiment_id": "18D_final",
+  "dataset_id": "sva-bench-seed",
+  "dataset_version": "0.1.0",
+  "SVA_commit": "phase18d",
+  "SVA_version": "18.0.0-final",
+  "timestamp": "2026-09-17T12:04:36.717275+00:00",
+  "random_seed": 42,
+  "baselines_run": [
+    "BASELINE_TEST_ONLY",
+    "BASELINE_LLM_JUDGE",
+    "FULL_SVA"
+  ],
+  "ablations_run": [
+    "SVA_NO_AMBIGUITY_GATE",
+    "SVA_NO_NEGATIVE_OBLIGATIONS",
+    "SVA_NO_EVIDENCE_INTEGRITY",
+    "SVA_NO_STALE_DETECTION",
+    "SVA_NO_SKEPTIC"
+  ],
+  "configuration_hash": "0a61fc719979e32eeb5c26cfc4f3877820fe8edb4faf17a7b726b4cb6ecb9576",
+  "environment_fingerprint": "local-test-runner"
+}

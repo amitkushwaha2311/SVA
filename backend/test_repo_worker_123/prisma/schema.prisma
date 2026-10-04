@@ -1,0 +1,337 @@
+// LIFE//OS — Prisma Schema (PostgreSQL)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  character       Character?
+  quests          Quest[]
+  completions     QuestCompletion[]
+  habits          Habit[]
+  habitCompletions HabitCompletion[]
+  campaigns       Campaign[]
+  bosses          Boss[]
+  bossDamage      BossDamageEvent[]
+  inventory       InventoryItem[]
+  userTraits      UserTrait[]
+  userAbilities   UserAbility[]
+  activityEvents  ActivityEvent[]
+
+  @@index([email])
+}
+
+// ─── Character ───────────────────────────────────────────────────────────────
+
+model Character {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  level           Int       @default(1)
+  xp              Int       @default(0)
+  xpToNextLevel   Int       @default(100)
+  gold            Int       @default(0)
+  archetype       String    @default("THE BUILDER")
+
+  // Attributes
+  intellect       Int       @default(10)
+  strength        Int       @default(10)
+  discipline      Int       @default(10)
+  creativity      Int       @default(10)
+  social          Int       @default(10)
+  recovery        Int       @default(10)
+
+  // Streaks
+  currentStreak   Int       @default(0)
+  longestStreak   Int       @default(0)
+  lastActiveDate  String?   // ISO date string YYYY-MM-DD
+  comboMultiplier Float     @default(1.0)
+
+  // Equipped cosmetics
+  equippedFrameId    String?
+  equippedAuraId     String?
+  equippedBadgeId    String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+// ─── Quests ──────────────────────────────────────────────────────────────────
+
+model Quest {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  attribute   String    // INTELLECT | STRENGTH | DISCIPLINE | CREATIVITY | SOCIAL | RECOVERY
+  difficulty  String    // EASY | MEDIUM | HARD | EPIC
+  xpReward    Int
+  goldReward  Int
+  status      String    @default("ACTIVE") // ACTIVE | COMPLETED | CANCELLED
+
+  dueDate     DateTime?
+  campaignId  String?
+  campaign    Campaign? @relation(fields: [campaignId], references: [id])
+
+  completions QuestCompletion[]
+  bossDamage  BossDamageEvent[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([campaignId])
+  @@index([status])
+}
+
+model QuestCompletion {
+  id          String    @id @default(cuid())
+  questId     String
+  quest       Quest     @relation(fields: [questId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  xpEarned    Int
+  goldEarned  Int
+  comboApplied Float   @default(1.0)
+  completedAt DateTime @default(now())
+
+  @@index([questId])
+  @@index([userId])
+  @@index([completedAt])
+}
+
+// ─── Habits ──────────────────────────────────────────────────────────────────
+
+model Habit {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title           String
+  description     String?
+  attribute       String    // INTELLECT | STRENGTH | DISCIPLINE | CREATIVITY | SOCIAL | RECOVERY
+  difficulty      String    @default("MEDIUM") // EASY | MEDIUM | HARD | EPIC
+  frequency       String    @default("DAILY")  // DAILY | WEEKLY
+  xpReward        Int       @default(40)
+  goldReward      Int       @default(15)
+  currentStreak   Int       @default(0)
+  longestStreak   Int       @default(0)
+  lastCompletedAt DateTime?
+
+  completions     HabitCompletion[]
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([frequency])
+}
+
+model HabitCompletion {
+  id          String    @id @default(cuid())
+  habitId     String
+  habit       Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  xpEarned    Int
+  goldEarned  Int
+  completedAt DateTime @default(now())
+
+  @@index([habitId])
+  @@index([userId])
+  @@index([completedAt])
+}
+
+// ─── Campaigns ───────────────────────────────────────────────────────────────
+
+model Campaign {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  status      String    @default("ACTIVE") // ACTIVE | COMPLETED | ABANDONED
+  progress    Int       @default(0) // 0-100
+
+  stages      CampaignStage[]
+  quests      Quest[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model CampaignStage {
+  id          String    @id @default(cuid())
+  campaignId  String
+  campaign    Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  order       Int
+  status      String    @default("LOCKED") // LOCKED | ACTIVE | COMPLETED
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([campaignId])
+}
+
+// ─── Bosses ──────────────────────────────────────────────────────────────────
+
+model Boss {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  maxHP       Int       @default(1000)
+  currentHP   Int
+  rewardXP    Int       @default(500)
+  rewardGold  Int       @default(200)
+  status      String    @default("ACTIVE") // ACTIVE | DEFEATED
+
+  damageEvents BossDamageEvent[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model BossDamageEvent {
+  id          String    @id @default(cuid())
+  bossId      String
+  boss        Boss      @relation(fields: [bossId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questId     String?
+  quest       Quest?    @relation(fields: [questId], references: [id])
+
+  damage      Int
+  createdAt   DateTime  @default(now())
+
+  @@index([bossId])
+  @@index([userId])
+}
+
+// ─── Shop & Inventory ────────────────────────────────────────────────────────
+
+model Item {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String
+  category    String    // FRAME | AURA | BADGE | EFFECT | THEME
+  price       Int
+  rarity      String    // COMMON | RARE | EPIC | LEGENDARY
+  icon        String    @default("🎮")
+
+  inventory   InventoryItem[]
+
+  createdAt   DateTime  @default(now())
+}
+
+model InventoryItem {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId      String
+  item        Item      @relation(fields: [itemId], references: [id])
+
+  equipped    Boolean   @default(false)
+  purchasedAt DateTime  @default(now())
+
+  @@unique([userId, itemId])
+  @@index([userId])
+}
+
+// ─── Traits ──────────────────────────────────────────────────────────────────
+
+model Trait {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String
+  icon        String
+  rarity      String    // COMMON | RARE | EPIC | LEGENDARY
+  conditionKey String   // maps to trait-engine conditions
+
+  userTraits  UserTrait[]
+}
+
+model UserTrait {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  traitId     String
+  trait       Trait     @relation(fields: [traitId], references: [id])
+
+  unlockedAt  DateTime  @default(now())
+
+  @@unique([userId, traitId])
+  @@index([userId])
+}
+
+// ─── Abilities ───────────────────────────────────────────────────────────────
+
+model Ability {
+  id            String    @id @default(cuid())
+  name          String    @unique
+  description   String
+  requiredLevel Int
+  icon          String    @default("⚡")
+
+  userAbilities UserAbility[]
+}
+
+model UserAbility {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  abilityId   String
+  ability     Ability   @relation(fields: [abilityId], references: [id])
+
+  unlockedAt  DateTime  @default(now())
+
+  @@unique([userId, abilityId])
+  @@index([userId])
+}
+
+// ─── Activity Events ─────────────────────────────────────────────────────────
+
+model ActivityEvent {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        String    // QUEST_COMPLETED | HABIT_COMPLETED | XP_GAINED | LEVEL_UP | ATTRIBUTE_INCREASED | TRAIT_UNLOCKED | ITEM_PURCHASED | ITEM_EQUIPPED | BOSS_DAMAGED | BOSS_DEFEATED | CAMPAIGN_COMPLETED | STREAK_MILESTONE
+  metadata    String    @default("{}") // JSON string
+
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([type])
+}
