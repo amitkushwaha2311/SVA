@@ -159,45 +159,93 @@ class EvidenceCollector:
             
         policy = get_default_policy()
 
+        # 0. Get Code Entities
+        code_entities = []
+        if hasattr(scan_result, "entities"):
+            code_entities = scan_result.entities
+        else:
+            from app.repository.parser.manager import ParserManager
+            from app.repository.scanner.path_guard import PathGuard
+            from pathlib import Path
+            try:
+                guard = PathGuard(root=Path(snapshot_path))
+                content_map = {}
+                for f in scan_result.files:
+                    if not getattr(f, "is_binary", True) and not getattr(f, "read_error", None):
+                        try:
+                            content_map[f.relative_path] = guard.safe_read_bytes(f.relative_path)
+                        except Exception:
+                            pass
+                pm = ParserManager()
+                pr = pm.parse_repository(repository_id, analysis_id, scan_result.files, content_map)
+                code_entities = pr.all_entities
+            except Exception as e:
+                logger.error(f"Failed to extract entities for evidence: {e}")
+
         for contract in contracts:
             # 1. Static Evidence (Candidate mappings)
             static_evs = self.static_collector.collect_code_mapping(
                 repository_id=repository_id,
                 commit_id=commit_id,
                 contract=contract,
-                code_entities=scan_result.entities,
+                code_entities=code_entities,
             )
             evidence_items.extend(static_evs)
             
-            # 2. Dynamic Execution Evidence (Tests)
+            # 2. Dynamic Execution Evidence
+            #
+            # Categories eligible for sandbox execution:
+            #   BEHAVIOR  — a named behavioural obligation expressible as a test
+            #   FUNCTION  — a specific function whose behaviour can be tested
+            #   METHOD    — a specific method whose behaviour can be tested
+            #
+            # API_ENDPOINT is excluded: HTTP-level tests require network access,
+            # which the sandbox policy explicitly denies (NetworkPolicy.DENY).
+            # DATABASE_OPERATION, USER_FLOW, and POLICY targets require
+            # integration environments outside the current sandbox scope.
+            #
+            # test_file is drawn from target.code_entity_ref — the only field
+            # on VerificationTarget that carries a code-level path or identifier.
+            # When code_entity_ref is None the planner's own guard rejects the
+            # request cleanly (returns None), so no unsafe execution occurs.
+            _EXECUTABLE_CATEGORIES = {
+                VerificationTargetCategory.BEHAVIOR,
+                VerificationTargetCategory.FUNCTION,
+                VerificationTargetCategory.METHOD,
+            }
             for target in contract.verification_targets:
-                if target.category == VerificationTargetCategory.TEST:
-                    # Plan execution
-                    request = self.planner.plan(
-                        contract=contract,
-                        obligation_id="derived-obligation-id", # Placeholder
-                        target_id=target.target_id,
-                        repository_id=repository_id,
-                        commit_id=commit_id,
-                        test_file=target.identifier,
-                        command_id="pytest",
-                        expected_outcome="PASS",
-                        job_id=job_id,
-                        analysis_id=analysis_id,
-                        snapshot_id=snapshot_id,
-                    )
-                    
-                    if request:
-                        backend.create()
-                        try:
-                            # Execute safely
-                            observation = backend.execute(request, policy)
-                            # Convert to Evidence
-                            ev = self.capture.capture(request, observation)
-                            evidence_items.append(ev)
-                        except Exception as e:
-                            logger.error(f"Execution failed for {request.execution_id}: {e}")
-                        finally:
-                            backend.destroy()
+                if target.category not in _EXECUTABLE_CATEGORIES:
+                    continue
+
+                # code_entity_ref is the candidate path/identifier.
+                # Planner validates and rejects None / unsafe values itself.
+                test_file = target.code_entity_ref
+
+                request = self.planner.plan(
+                    contract=contract,
+                    obligation_id="derived-obligation-id",  # Placeholder
+                    target_id=target.target_id,
+                    repository_id=repository_id,
+                    commit_id=commit_id,
+                    test_file=test_file,
+                    command_id="pytest",
+                    expected_outcome="PASS",
+                    job_id=job_id,
+                    analysis_id=analysis_id,
+                    snapshot_id=snapshot_id,
+                )
+
+                if request:
+                    backend.create()
+                    try:
+                        # Execute safely inside the sandbox
+                        observation = backend.execute(request, policy)
+                        # Translate observation to Evidence
+                        ev = self.capture.capture(request, observation)
+                        evidence_items.append(ev)
+                    except Exception as e:
+                        logger.error(f"Execution failed for {request.execution_id}: {e}")
+                    finally:
+                        backend.destroy()
         
         return evidence_items

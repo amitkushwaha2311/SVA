@@ -325,3 +325,99 @@ class TestRegressions:
         )
         case = AmbiguityDetector().detect_ambiguity("repo", req)
         assert case is not None
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Compiler: code_entity_ref propagation
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestCompilerCodeEntityRefPropagation:
+    """
+    Focused tests verifying that SemanticContractCompiler.compile() propagates
+    requirement.code_entity_refs[0].entity_id into every VerificationTarget it
+    creates, and preserves None when the list is empty.
+    """
+
+    def _make_confirmed_req_with_refs(
+        self,
+        code_entity_refs=None,
+    ) -> SemanticRequirement:
+        from app.semantic_ir.models import CodeEntityRef
+        return SemanticRequirement(
+            requirement_id="req-ref-test",
+            candidate_id="cand-ref",
+            analysis_id="run-ref",
+            statement="Only project owners can delete projects.",
+            original_statement="Only project owners can delete projects.",
+            provenance=Provenance.README,
+            sources=[SourceLocation(path="app/auth/permissions.py", start_line=1, end_line=1)],
+            status=CandidateStatus.CANDIDATE,
+            human_confirmed=True,
+            actor=Actor(name="project owner"),
+            action=Action(name="delete"),
+            resource=Resource(name="project"),
+            code_entity_refs=code_entity_refs or [],
+            verification_state=VerificationState(
+                intent=IntentState.HUMAN_CONFIRMED,
+                implementation=ImplementationState.UNKNOWN,
+                behavior=BehaviorState.UNKNOWN,
+            ),
+        )
+
+    def test_populated_refs_propagate_to_target(self, compiler: SemanticContractCompiler) -> None:
+        """When code_entity_refs is non-empty, VerificationTarget.code_entity_ref must be set."""
+        from app.semantic_ir.models import CodeEntityRef
+        entity_id = "abc123deadbeef"
+        req = self._make_confirmed_req_with_refs(
+            code_entity_refs=[CodeEntityRef(entity_id=entity_id, match_reason="exact:source_path==module_file_path:app/auth/permissions.py")]
+        )
+        contract = compiler.compile("repo", req)
+        assert contract.compilation_status == ContractStatus.READY
+        assert len(contract.verification_targets) == 1
+        assert contract.verification_targets[0].code_entity_ref == entity_id
+
+    def test_empty_refs_leave_target_code_entity_ref_none(self, compiler: SemanticContractCompiler) -> None:
+        """When code_entity_refs is empty, VerificationTarget.code_entity_ref must remain None."""
+        req = self._make_confirmed_req_with_refs(code_entity_refs=[])
+        contract = compiler.compile("repo", req)
+        assert contract.compilation_status == ContractStatus.READY
+        assert len(contract.verification_targets) == 1
+        assert contract.verification_targets[0].code_entity_ref is None
+
+    def test_only_first_ref_is_used(self, compiler: SemanticContractCompiler) -> None:
+        """When multiple refs exist only the first entity_id is used."""
+        from app.semantic_ir.models import CodeEntityRef
+        first_id = "first-entity-id"
+        second_id = "second-entity-id"
+        req = self._make_confirmed_req_with_refs(
+            code_entity_refs=[
+                CodeEntityRef(entity_id=first_id, match_reason="exact:source_path==module_file_path:app/auth/permissions.py"),
+                CodeEntityRef(entity_id=second_id, match_reason="exact:source_path==module_file_path:app/models/user.py"),
+            ]
+        )
+        contract = compiler.compile("repo", req)
+        assert contract.verification_targets[0].code_entity_ref == first_id
+
+    def test_blocked_contract_unaffected_by_refs(self, compiler: SemanticContractCompiler) -> None:
+        """A blocked (CANDIDATE) requirement must stay BLOCKED regardless of code_entity_refs."""
+        from app.semantic_ir.models import CodeEntityRef
+        req = self._make_confirmed_req_with_refs(
+            code_entity_refs=[CodeEntityRef(entity_id="some-id", match_reason="exact:source_path==module_file_path:x")]
+        )
+        # Force CANDIDATE → blocked
+        req.human_confirmed = False
+        req.verification_state.intent = IntentState.CANDIDATE
+        contract = compiler.compile("repo", req)
+        assert contract.compilation_status == ContractStatus.BLOCKED
+        assert len(contract.verification_targets) == 0
+
+    def test_ref_entity_id_matches_source_exactly(self, compiler: SemanticContractCompiler) -> None:
+        """The propagated entity_id string must be byte-for-byte identical to the input."""
+        from app.semantic_ir.models import CodeEntityRef
+        entity_id = "sha256:d56c381f961d307a21b3ca004cf1e3910f106644aefb1f43e654c8a56c4fd395"
+        req = self._make_confirmed_req_with_refs(
+            code_entity_refs=[CodeEntityRef(entity_id=entity_id, match_reason="exact:source_path==module_file_path:app/auth/permissions.py")]
+        )
+        contract = compiler.compile("repo", req)
+        assert contract.verification_targets[0].code_entity_ref == entity_id
+

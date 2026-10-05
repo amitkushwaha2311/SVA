@@ -759,3 +759,59 @@ def _make_file_record(rel_path: str, language: str | None) -> FileRecord:
         language_detection_method=DetectionMethod.EXTENSION,
         language_certainty=Certainty.DETERMINISTIC,
     )
+
+
+# ---------------------------------------------------------------------------
+# MODULE Entity Generation
+# ---------------------------------------------------------------------------
+
+class TestParserManagerModuleEntity:
+    def test_manager_emits_exactly_one_module_entity_per_file(self, manager: ParserManager) -> None:
+        """Every successfully parsed file must emit exactly one MODULE entity."""
+        record = _make_file_record("src/test.py", "Python")
+        content = b"def foo(): pass\n"
+        
+        result = manager.parse_file("repo-1", "run-1", record, content)
+        
+        assert result.parse_error is None
+        module_entities = [e for e in result.entities if e.entity_type == EntityType.MODULE]
+        assert len(module_entities) == 1
+        
+        mod = module_entities[0]
+        assert mod.file_path == "src/test.py"
+        assert mod.name == "src/test.py"
+        assert mod.start_line == 1
+        assert mod.end_line == 2 # 1 newline + 1
+        assert mod.extraction_method == "TREE_SITTER"
+
+    def test_manager_does_not_emit_module_for_parse_error(self, manager: ParserManager, monkeypatch) -> None:
+        """A PARSE_ERROR must not emit a MODULE entity (other than the dummy error one)."""
+        record = _make_file_record("src/bad.py", "Python")
+        content = b"def foo(): pass"
+        
+        # Force a crash to trigger the Exception block in parse_file
+        def mock_parse(*args, **kwargs):
+            raise ValueError("Forced error")
+        monkeypatch.setattr(manager._parsers[0], "parse", mock_parse)
+        
+        result = manager.parse_file("repo-1", "run-1", record, content)
+        
+        assert result.parse_error is not None
+        # Should not have a list of entities (or if it does, not the regular module entity)
+        module_entities = [e for e in result.entities if e.entity_type == EntityType.MODULE and e.name == "src/bad.py"]
+        assert len(module_entities) == 0
+
+    def test_manager_preserves_other_entities(self, manager: ParserManager) -> None:
+        """Emitting the MODULE entity must not interfere with other parsed entities."""
+        record = _make_file_record("src/test.py", "Python")
+        content = b"def foo(): pass\nclass Bar: pass\n"
+        
+        result = manager.parse_file("repo-1", "run-1", record, content)
+        
+        assert result.parse_error is None
+        assert len(result.entities) == 3 # 1 MODULE, 1 FUNCTION, 1 CLASS
+        
+        types = {e.entity_type for e in result.entities}
+        assert EntityType.MODULE in types
+        assert EntityType.FUNCTION in types
+        assert EntityType.CLASS in types

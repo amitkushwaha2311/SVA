@@ -98,7 +98,6 @@ class ParserManager:
                 content=content,
             ))
 
-            # Check if the parser itself returned a PARSE_ERROR record
             if len(entities) == 1 and entities[0].extraction_status == "PARSE_ERROR":
                 return FileParseResult(
                     file_path=file_path,
@@ -106,6 +105,21 @@ class ParserManager:
                     parse_error=f"Parser returned PARSE_ERROR for {file_path}",
                     extraction_method=method,
                 )
+
+            # Emits exactly one MODULE entity per parsed file, representing the file itself.
+            module_entity = CodeEntity(
+                entity_id=generate_entity_id(repository_id, file_path, EntityType.MODULE, file_path, 1),
+                repository_id=repository_id,
+                analysis_id=analysis_id,
+                file_path=file_path,
+                entity_type=EntityType.MODULE,
+                name=file_path,
+                start_line=1,
+                end_line=content.count(b"\n") + 1,
+                language=language,
+                extraction_method=method,
+            )
+            entities.insert(0, module_entity)
 
             return FileParseResult(
                 file_path=file_path,

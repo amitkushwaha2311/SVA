@@ -22,8 +22,9 @@ class DockerSandboxBackend(Sandbox):
     and no-new-privileges. Read-only repository snapshot.
     """
     
-    # Use a pinned digest for the SVA execution image (using alpine as a stand-in for the real image)
-    APPROVED_IMAGE = "alpine@sha256:c5b1261d6d3e43071626931fc004fa70c82dae47a9c878b1731677353f47e3be"
+    # Use a pinned digest for the SVA execution image (using alpine as a stand-in for the real image).
+    # Digest verified: amd64 alpine pulled 2026-10-05 and confirmed present in local Docker daemon.
+    APPROVED_IMAGE = "alpine@sha256:d56c381f961d307a21b3ca004cf1e3910f106644aefb1f43e654c8a56c4fd395"
 
     def __init__(self, snapshot_path: str):
         self.snapshot_path = snapshot_path

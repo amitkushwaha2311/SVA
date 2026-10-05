@@ -130,6 +130,14 @@ class SemanticContractCompiler:
         ]
 
         # Verification targets (candidate pointers, not proof)
+        # When the Semantic IR has resolved a deterministic MODULE-entity ref,
+        # propagate the first one into code_entity_ref so VerificationPlanner
+        # can build an ExecutionRequest.  None is preserved when no ref exists.
+        first_entity_ref = (
+            requirement.code_entity_refs[0].entity_id
+            if requirement.code_entity_refs
+            else None
+        )
         targets = []
         if requirement.action and requirement.resource:
             desc = f"Verify {requirement.action.name} on {requirement.resource.name}"
@@ -137,10 +145,8 @@ class SemanticContractCompiler:
                 target_id=generate_target_id(contract_id, desc),
                 category=VerificationTargetCategory.BEHAVIOR,
                 description=desc,
+                code_entity_ref=first_entity_ref,
             ))
-
-        # Code entity refs remain candidate references (not verified)
-        # (passed through from Semantic IR code_entity_refs if needed in the future)
 
         contract = SemanticContract(
             contract_id=contract_id,

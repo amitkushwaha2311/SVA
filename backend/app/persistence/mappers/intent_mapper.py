@@ -1,6 +1,6 @@
 from __future__ import annotations
 import dataclasses
-from app.repository.intent.models import IntentCandidate
+from app.repository.intent.models import IntentCandidate, SourceLocation
 from app.persistence.models.intent import IntentCandidateRow
 
 
@@ -9,6 +9,15 @@ def _source_to_dict(s) -> dict:
     if dataclasses.is_dataclass(s) and not isinstance(s, type):
         return dataclasses.asdict(s)
     return dict(s)
+
+
+def _dict_to_source(d: dict) -> SourceLocation:
+    """Deserialize a plain dict back into a SourceLocation."""
+    return SourceLocation(
+        path=d["path"],
+        start_line=d["start_line"],
+        end_line=d["end_line"],
+    )
 
 
 class IntentMapper:
@@ -30,6 +39,8 @@ class IntentMapper:
     @staticmethod
     def from_row(row: IntentCandidateRow) -> IntentCandidate:
         from app.repository.intent.models import CandidateStatus, Provenance
+        raw_sources = row.sources if row.sources else []
+        sources = [_dict_to_source(s) for s in raw_sources if isinstance(s, dict)]
         return IntentCandidate(
             candidate_id=row.candidate_id,
             analysis_id=row.analysis_id,
@@ -38,7 +49,7 @@ class IntentMapper:
             status=CandidateStatus(row.status),
             human_confirmed=row.human_confirmed,
             extraction_method=row.extraction_method,
-            sources=[],
-            provenance=Provenance(row.provenance) if row.provenance else None,
+            sources=sources,
+            provenance=Provenance(row.provenance) if row.provenance else Provenance.DEFAULT,
             evidence=[]
         )
