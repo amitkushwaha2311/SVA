@@ -18,10 +18,7 @@ const nextConfig: NextConfig = {
         source: "/api/workspaces/:path*",
         destination: `${backendUrl}/workspaces/:path*`,
       },
-      {
-        source: "/api/v1/workspaces",
-        destination: `${backendUrl}/api/v1/workspaces/`,
-      },
+
       {
         source: "/api/:path*",
         destination: `${backendUrl}/api/:path*`,

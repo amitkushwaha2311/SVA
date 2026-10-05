@@ -4,6 +4,7 @@ import { Shell } from "@/components/layout/Shell";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { Eye, X, Shield, AlertTriangle, Copy, Check, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -60,10 +61,14 @@ function CopyButton({ value }: { value: string }) {
 export default function EvidencePage() {
   const [selected, setSelected] = useState<EvidenceItem | null>(null);
 
+  const { activeWorkspace } = useWorkspace();
+  const { activeRepository, isRepoLoading } = useRepository();
+
   const { data, isLoading } = useQuery({
-    queryKey: ["evidence"],
+    queryKey: ["evidence", activeWorkspace?.id, activeRepository?.id],
+    enabled: !!activeWorkspace?.id && !!activeRepository?.id,
     queryFn: () =>
-      apiFetch<{ items: EvidenceItem[]; total: number }>("/v1/evidence/?workspace_id=default").catch(() => ({ items: [], total: 0 })),
+      apiFetch<{ items: EvidenceItem[]; total: number }>(`/v1/evidence?workspace_id=${activeWorkspace!.id}&repository_id=${activeRepository!.id}`).catch(() => ({ items: [], total: 0 })),
     retry: false,
   });
 
@@ -81,9 +86,17 @@ export default function EvidencePage() {
             </p>
           </div>
 
-          {isLoading ? (
+          {isRepoLoading || isLoading ? (
             <div className="p-6 space-y-2">
               {[1, 2, 3, 4].map(i => <div key={i} className="h-10 bg-[#0D0F12] rounded animate-pulse border border-[#20242B]" />)}
+            </div>
+          ) : !activeRepository ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-16 text-center">
+              <Eye className="w-10 h-10 text-[#20242B] mb-6" />
+              <div className="font-mono text-xs uppercase tracking-widest text-[#5F6773] mb-3">No Repository</div>
+              <p className="text-[#8B93A1] max-w-sm text-sm leading-relaxed mb-2">
+                No repository is selected.
+              </p>
             </div>
           ) : items.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center p-16 text-center">

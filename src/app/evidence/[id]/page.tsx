@@ -4,6 +4,7 @@ import { use, useEffect } from "react";
 import { Shell } from "@/components/layout/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace } from "@/components/providers";
 import { Eye, Shield, Copy, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -30,11 +31,13 @@ function StatusPill({ status }: { status: string }) {
 
 export default function EvidenceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { activeWorkspace } = useWorkspace();
   
   const { data, isLoading, error } = useQuery({
-    queryKey: ["evidence", id],
+    queryKey: ["evidence", id, activeWorkspace?.id],
+    enabled: !!activeWorkspace?.id,
     queryFn: async () => {
-      return apiFetch<any>(`/v1/evidence/${id}?workspace_id=default`);
+      return apiFetch<any>(`/v1/evidence/${id}?workspace_id=${activeWorkspace!.id}`);
     },
     retry: false,
   });

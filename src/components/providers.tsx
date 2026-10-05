@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { useState, createContext, useContext, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
 
@@ -15,7 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <WorkspaceProvider>
-          {children}
+          <RepositoryProvider>
+            {children}
+          </RepositoryProvider>
         </WorkspaceProvider>
       </AuthProvider>
     </QueryClientProvider>
@@ -107,8 +109,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     }
 
     setIsLoading(true);
-    // Uses /api/v1/workspaces/ — returns only workspaces the authenticated user is a member of
-    apiFetch<{ items: Workspace[] }>("/v1/workspaces/")
+    apiFetch<{ items: Workspace[] }>("/v1/workspaces")
       .then((data) => {
         setWorkspaces(data.items);
         
@@ -142,3 +143,88 @@ export function useWorkspace() {
   }
   return context;
 }
+
+// ─── Repository Context ───────────────────────────────────────────────────────
+
+export interface Repository {
+  id: string;
+  name: string;
+  provider_type: string | null;
+  repository_identifier: string;
+  created_at: string;
+}
+
+export interface Analysis {
+  id: string;
+  status: string;
+  created_at: string;
+}
+
+interface RepositoryContextType {
+  repositories: Repository[];
+  activeRepository: Repository | null;
+  setActiveRepository: (r: Repository | null) => void;
+  activeAnalysis: Analysis | null;
+  isRepoLoading: boolean;
+}
+
+const RepositoryContext = createContext<RepositoryContextType | undefined>(undefined);
+
+export function RepositoryProvider({ children }: { children: React.ReactNode }) {
+  const { activeWorkspace } = useWorkspace();
+  const [activeRepository, setActiveRepository] = useState<Repository | null>(null);
+  const { user } = useAuth();
+  
+  const { data: reposData, isLoading: isRepoLoading } = useQuery({
+    queryKey: ["context-repositories", activeWorkspace?.id],
+    enabled: !!activeWorkspace?.id && !!user,
+    queryFn: () =>
+      apiFetch<{ items: Repository[] }>(
+        `/v1/orchestration/repositories?workspace_id=${activeWorkspace!.id}`
+      ).catch(() => ({ items: [] })),
+  });
+
+  const repositories = reposData?.items || [];
+
+  useEffect(() => {
+    if (!activeWorkspace) {
+      setActiveRepository(null);
+      return;
+    }
+    if (repositories.length > 0) {
+      if (!activeRepository || !repositories.find(r => r.id === activeRepository.id)) {
+        setActiveRepository(repositories[0]);
+      }
+    } else {
+      setActiveRepository(null);
+    }
+  }, [repositories, activeWorkspace, activeRepository]);
+
+  const { data: analysesData } = useQuery({
+    queryKey: ["context-analyses", activeRepository?.id, activeWorkspace?.id],
+    enabled: !!activeWorkspace?.id && !!activeRepository?.id && !!user,
+    queryFn: () =>
+      apiFetch<{ analyses: Analysis[] }>(
+        `/v1/analyses?workspace_id=${activeWorkspace!.id}&repository_id=${activeRepository!.id}`
+      ).catch(() => ({ analyses: [] })),
+  });
+
+  const analyses = analysesData?.analyses || [];
+  const sortedAnalyses = [...analyses].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  const activeAnalysis = sortedAnalyses.length > 0 ? sortedAnalyses[0] : null;
+
+  return (
+    <RepositoryContext.Provider value={{ repositories, activeRepository, setActiveRepository, activeAnalysis, isRepoLoading }}>
+      {children}
+    </RepositoryContext.Provider>
+  );
+}
+
+export function useRepository() {
+  const context = useContext(RepositoryContext);
+  if (context === undefined) {
+    throw new Error("useRepository must be used within a RepositoryProvider");
+  }
+  return context;
+}
+

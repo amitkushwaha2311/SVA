@@ -4,17 +4,21 @@ import { use, useEffect } from "react";
 import { Shell } from "@/components/layout/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { Scale, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function ContractDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { activeWorkspace } = useWorkspace();
+  const { activeAnalysis } = useRepository();
   
   const { data, isLoading, error } = useQuery({
-    queryKey: ["contract", id],
+    queryKey: ["contract", id, activeWorkspace?.id, activeAnalysis?.id],
+    enabled: !!activeWorkspace?.id && !!activeAnalysis?.id,
     queryFn: async () => {
-      return apiFetch<any>(`/v1/contracts/${id}?workspace_id=default`);
+      return apiFetch<any>(`/v1/contracts/${id}?workspace_id=${activeWorkspace!.id}&analysis_id=${activeAnalysis!.id}`);
     },
     retry: false,
   });

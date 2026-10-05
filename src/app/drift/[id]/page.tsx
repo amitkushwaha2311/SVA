@@ -4,17 +4,20 @@ import { use, useEffect } from "react";
 import { Shell } from "@/components/layout/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { GitCommitHorizontal, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function DriftDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { activeWorkspace } = useWorkspace();
   
   const { data, isLoading, error } = useQuery({
-    queryKey: ["drift", id],
+    queryKey: ["drift", id, activeWorkspace?.id],
+    enabled: !!activeWorkspace?.id,
     queryFn: async () => {
-      return apiFetch<any>(`/v1/drift/${id}?workspace_id=default&repository_id=default`);
+      return apiFetch<any>(`/v1/drift/${id}?workspace_id=${activeWorkspace!.id}`);
     },
     retry: false,
   });
