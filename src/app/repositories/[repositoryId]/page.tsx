@@ -1,18 +1,27 @@
 "use client";
 
-import { useWorkspace } from "@/components/providers";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { Shell } from "@/components/layout/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
 import { GitBranch, GitCommitHorizontal, Play, ExternalLink, Box, Activity } from "lucide-react";
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import { AnalyzeModal } from "@/components/analysis/AnalyzeModal";
 
 export default function RepositoryPage({ params }: { params: Promise<{ repositoryId: string }> }) {
   const { activeWorkspace } = useWorkspace();
+  const { setActiveRepository, repositories } = useRepository();
   const [showAnalyzeModal, setShowAnalyzeModal] = useState(false);
   const resolvedParams = use(params);
   const repositoryId = resolvedParams.repositoryId;
+
+  // Sync the global RepositoryContext whenever the URL changes to a specific repo
+  useEffect(() => {
+    if (repositories.length > 0) {
+      const found = repositories.find(r => r.id === repositoryId);
+      if (found) setActiveRepository(found);
+    }
+  }, [repositoryId, repositories, setActiveRepository]);
 
   const { data: repo, isLoading: isRepoLoading } = useQuery({
     queryKey: ["repository", repositoryId, activeWorkspace?.id],
@@ -27,7 +36,7 @@ export default function RepositoryPage({ params }: { params: Promise<{ repositor
     enabled: !!activeWorkspace?.id && !!repositoryId,
     queryFn: () =>
       apiFetch<{ analyses: any[] }>(
-        `/v1/analyses?workspace_id=${activeWorkspace!.id}&repository_id=${repositoryId}`
+        `/v1/analyses/?workspace_id=${activeWorkspace!.id}&repository_id=${repositoryId}`
       ).catch(() => ({ analyses: [] })),
     retry: false,
   });

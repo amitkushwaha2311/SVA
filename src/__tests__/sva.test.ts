@@ -114,6 +114,21 @@ describe('apiFetch routing logic', () => {
     fetchSpy.mockRestore();
   });
 
+  it('preserves trailing slash for analyses endpoint to avoid CORS redirects', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ analyses: [] }), { status: 200 })
+    );
+
+    const { apiFetch } = await import('@/lib/api');
+    await apiFetch('/v1/analyses/?workspace_id=w1&repository_id=r1');
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      '/api/v1/analyses/?workspace_id=w1&repository_id=r1',
+      expect.any(Object)
+    );
+    fetchSpy.mockRestore();
+  });
+
   it('throws on non-OK response', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
       new Response(JSON.stringify({ detail: 'Not found' }), { status: 404 })
