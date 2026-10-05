@@ -26,7 +26,7 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
   const config: RequestInit = {
     ...options,
     headers,
-    credentials: 'same-origin', // always send session cookie, never localStorage tokens
+    credentials: 'include', // cross-origin (Vercel→Render): must be 'include' to send session cookie
     cache: 'no-store',
   };
 
