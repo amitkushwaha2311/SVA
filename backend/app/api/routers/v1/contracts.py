@@ -91,7 +91,7 @@ async def _build_contract_response(contract: SemanticContractRow, db: AsyncSessi
     )
 
 
-@router.get("/", response_model=ContractListResponse)
+@router.get("", response_model=ContractListResponse)
 async def list_contracts(
     workspace_id: str,
     analysis_id: str,

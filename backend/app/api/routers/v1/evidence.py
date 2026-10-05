@@ -53,7 +53,7 @@ async def _build_evidence_response(ev: EvidenceRow, db: AsyncSession) -> Evidenc
     )
 
 
-@router.get("/", response_model=EvidenceListResponse)
+@router.get("", response_model=EvidenceListResponse)
 async def list_evidence(
     workspace_id: str,
     repository_id: Optional[str] = None,

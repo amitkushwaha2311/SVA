@@ -46,7 +46,7 @@ async def _assert_analysis_in_workspace(
     return analysis
 
 
-@ambiguity_router.get("/", response_model=AmbiguityListResponse)
+@ambiguity_router.get("", response_model=AmbiguityListResponse)
 async def list_ambiguity(
     workspace_id: str,
     analysis_id: str,
@@ -106,7 +106,7 @@ async def list_ambiguity(
 verification_router = APIRouter(prefix="/v1/verification", tags=["verification"])
 
 
-@verification_router.get("/", response_model=VerificationListResponse)
+@verification_router.get("", response_model=VerificationListResponse)
 async def list_verification(
     workspace_id: str,
     analysis_id: str,
@@ -158,7 +158,7 @@ async def list_verification(
 drift_router = APIRouter(prefix="/v1/drift", tags=["drift"])
 
 
-@drift_router.get("/", response_model=DriftListResponse)
+@drift_router.get("", response_model=DriftListResponse)
 async def list_drift(
     workspace_id: str,
     repository_id: str,

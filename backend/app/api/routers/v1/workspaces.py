@@ -29,7 +29,7 @@ class WorkspaceListResponse(BaseModel):
     items: List[WorkspaceResponse]
 
 
-@router.get("/", response_model=WorkspaceListResponse)
+@router.get("", response_model=WorkspaceListResponse)
 async def list_my_workspaces(
     current_user: UserRow = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
