@@ -64,7 +64,7 @@ async def test_list_analyses_success():
         app.dependency_overrides[get_db] = mock_get_db
 
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            response = await ac.get("/api/v1/analyses/?workspace_id=ws-1&repository_id=repo-1")
+            response = await ac.get("/api/v1/analyses?workspace_id=ws-1&repository_id=repo-1")
 
         assert response.status_code == 200
         data = response.json()
@@ -95,7 +95,7 @@ async def test_list_analyses_empty():
         app.dependency_overrides[get_db] = mock_get_db
 
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            response = await ac.get("/api/v1/analyses/?workspace_id=ws-1&repository_id=repo-empty")
+            response = await ac.get("/api/v1/analyses?workspace_id=ws-1&repository_id=repo-empty")
 
         assert response.status_code == 200
         data = response.json()

@@ -33,7 +33,7 @@ async def _verify_analysis_access(workspace_id: str, analysis_id: str, current_u
         
     return analysis
 
-@router.get("/", response_model=AnalysisListResponse)
+@router.get("", response_model=AnalysisListResponse)
 async def list_analyses(
     workspace_id: str,
     repository_id: str = None,
