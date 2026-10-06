@@ -1,25 +1,17 @@
 "use client";
 
-import { useWorkspace, useAuth } from "@/components/providers";
+import { useWorkspace, useAuth, useRepository } from "@/components/providers";
 import { openCommandPalette } from "@/components/ui/CommandPalette";
 import { GitBranch, ChevronDown, User as UserIcon, Check, LogOut, Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-
-interface Repository {
-  id: string;
-  name: string;
-  provider_type: string | null;
-  repository_identifier: string;
-}
 
 export function TopBar() {
   const { user } = useAuth();
   const { workspaces, activeWorkspace, setActiveWorkspace, isLoading } = useWorkspace();
+  const { repositories: repos, activeRepository, setActiveRepository } = useRepository();
   const [wsOpen, setWsOpen] = useState(false);
   const [repoOpen, setRepoOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -28,18 +20,6 @@ export function TopBar() {
   const userRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
-
-  // Fetch repositories for the active workspace — same endpoint as the dashboard
-  const { data: reposData } = useQuery({
-    queryKey: ["topbar-repositories", activeWorkspace?.id],
-    enabled: !!activeWorkspace?.id,
-    queryFn: () =>
-      apiFetch<{ items: Repository[] }>(
-        `/v1/orchestration/repositories?workspace_id=${activeWorkspace!.id}`
-      ).catch(() => ({ items: [] })),
-    staleTime: 30_000,
-  });
-  const repos = reposData?.items ?? [];
 
   // Close all dropdowns on outside click
   useEffect(() => {
@@ -159,7 +139,9 @@ export function TopBar() {
             disabled={!activeWorkspace}
           >
             <GitBranch className="w-3.5 h-3.5 shrink-0" />
-            <span className="font-medium max-w-[140px] truncate">Repository</span>
+            <span className="font-medium max-w-[140px] truncate">
+              {activeRepository ? activeRepository.name : "Repository"}
+            </span>
             <ChevronDown className={cn("w-4 h-4 text-[#5F6773] transition-transform shrink-0", repoOpen && "rotate-180")} />
           </button>
 
@@ -173,19 +155,22 @@ export function TopBar() {
               ) : (
                 <div className="py-1 max-h-72 overflow-y-auto">
                   {repos.map(repo => (
-                    <Link
+                    <button
                       key={repo.id}
-                      href={`/repositories/${repo.id}`}
+                      type="button"
                       role="menuitem"
-                      onClick={() => setRepoOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 text-sm text-[#8B93A1] hover:bg-[#12151A] hover:text-[#F5F7FA] transition-colors"
+                      onClick={() => {
+                        setActiveRepository(repo);
+                        setRepoOpen(false);
+                      }}
+                      className="w-full text-left flex items-center gap-3 px-3 py-2.5 text-sm text-[#8B93A1] hover:bg-[#12151A] hover:text-[#F5F7FA] transition-colors"
                     >
                       <GitBranch className="w-4 h-4 text-[#5F6773] shrink-0" />
                       <div className="flex flex-col gap-0.5 min-w-0">
                         <span className="font-medium truncate text-[#F5F7FA]">{repo.name}</span>
                         <span className="text-[10px] font-mono text-[#5F6773] truncate">{repo.repository_identifier}</span>
                       </div>
-                    </Link>
+                    </button>
                   ))}
                 </div>
               )}

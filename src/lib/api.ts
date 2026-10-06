@@ -9,11 +9,23 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
   // Auth and bare-workspace routes live at /api/; v1-prefixed routes at /api/v1/...
   const isAuthOrWorkspace = endpoint.startsWith("/auth") || endpoint.startsWith("/workspaces");
   const isV1Prefixed = endpoint.startsWith("/v1/");
-  const url = isAuthOrWorkspace
+  
+  let path = isAuthOrWorkspace
     ? `/api${endpoint}`
     : isV1Prefixed
     ? `/api${endpoint}`
     : `/api/v1${endpoint}`;
+    
+  // If NEXT_PUBLIC_BACKEND_URL is set, we bypass the Vercel /api rewrite to avoid 307 redirects.
+  // The backend actually mounts /auth and /workspaces at the root, so we strip /api for those.
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (baseUrl) {
+    if (isAuthOrWorkspace) {
+      path = endpoint; // backend expects /auth/... not /api/auth/...
+    }
+  }
+  
+  const url = baseUrl ? `${baseUrl.replace(/\/$/, '')}${path}` : path;
 
   const headers = new Headers(options.headers || {});
   if (!headers.has('Content-Type') && options.method !== 'GET' && options.body) {

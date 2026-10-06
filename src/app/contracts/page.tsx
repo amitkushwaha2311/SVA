@@ -4,6 +4,7 @@ import { Shell } from "@/components/layout/Shell";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { Scale, ChevronRight, Check, X, AlertTriangle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,9 +30,13 @@ const STATUS_STYLES: Record<string, string> = {
 export default function ContractsPage() {
   const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
 
+  const { activeWorkspace } = useWorkspace();
+  const { activeAnalysis, isRepoLoading } = useRepository();
+
   const { data, isLoading } = useQuery({
-    queryKey: ["contracts"],
-    queryFn: () => apiFetch<{ items: Contract[] }>("/v1/contracts/?workspace_id=default&analysis_id=default").catch(() => ({ items: [] })),
+    queryKey: ["contracts", activeWorkspace?.id, activeAnalysis?.id],
+    enabled: !!activeWorkspace?.id && !!activeAnalysis?.id,
+    queryFn: () => apiFetch<{ items: Contract[] }>(`/v1/contracts?workspace_id=${activeWorkspace!.id}&analysis_id=${activeAnalysis!.id}`).catch(() => ({ items: [] })),
     retry: false,
   });
 
@@ -50,12 +55,18 @@ export default function ContractsPage() {
             <p className="text-[#5F6773] mt-1 font-mono text-xs tracking-wide">Semantic contracts compiled from requirements.</p>
           </div>
 
-          {isLoading ? (
+          {isRepoLoading || isLoading ? (
             <div className="p-6 space-y-3">
               {[1, 2, 3].map(i => (
                 <div key={i} className="h-20 bg-[#0D0F12] rounded animate-pulse border border-[#20242B]" />
               ))}
             </div>
+          ) : !activeAnalysis ? (
+            <EmptyState
+              title="No Analysis"
+              message="No analysis has been completed for this repository yet."
+              detail=""
+            />
           ) : contracts.length === 0 ? (
             <EmptyState
               title="No contracts"

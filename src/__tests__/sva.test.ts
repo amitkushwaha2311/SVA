@@ -64,8 +64,8 @@ describe('Security: XSS and Repository Content Safety', () => {
     expect(credentialKeys).toHaveLength(0);
   });
 
-  it('apiFetch always uses same-origin credentials (session cookie)', async () => {
-    // Verify that the api fetch configuration uses same-origin credentials
+  it('apiFetch always uses include credentials (session cookie)', async () => {
+    // Verify that the api fetch configuration uses include credentials
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
       new Response(JSON.stringify({ ok: true }), { status: 200 })
     );
@@ -75,7 +75,7 @@ describe('Security: XSS and Repository Content Safety', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith(
       expect.stringContaining('/api/v1/evidence/'),
-      expect.objectContaining({ credentials: 'same-origin' })
+      expect.objectContaining({ credentials: 'include' })
     );
     fetchSpy.mockRestore();
   });
@@ -127,6 +127,36 @@ describe('apiFetch routing logic', () => {
       expect.any(Object)
     );
     fetchSpy.mockRestore();
+  });
+
+  it('uses NEXT_PUBLIC_BACKEND_URL to bypass /api proxy for direct external backend calls', async () => {
+    const originalEnv = process.env.NEXT_PUBLIC_BACKEND_URL;
+    process.env.NEXT_PUBLIC_BACKEND_URL = 'https://sva-h4uv.onrender.com';
+    
+    // Clear module cache to re-evaluate the env var if it was cached (though it is read per-call now)
+    vi.resetModules();
+    const { apiFetch } = await import('@/lib/api');
+
+    const fetchSpy1 = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({}), { status: 200 })
+    );
+    await apiFetch('/v1/analyses/?workspace_id=1');
+    expect(fetchSpy1).toHaveBeenCalledWith(
+      'https://sva-h4uv.onrender.com/api/v1/analyses/?workspace_id=1',
+      expect.objectContaining({ credentials: 'include' })
+    );
+
+    const fetchSpy2 = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({}), { status: 200 })
+    );
+    await apiFetch('/auth/me');
+    expect(fetchSpy2).toHaveBeenCalledWith(
+      'https://sva-h4uv.onrender.com/auth/me',
+      expect.objectContaining({ credentials: 'include' })
+    );
+
+    process.env.NEXT_PUBLIC_BACKEND_URL = originalEnv;
+    vi.restoreAllMocks();
   });
 
   it('throws on non-OK response', async () => {

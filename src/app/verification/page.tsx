@@ -4,6 +4,7 @@ import { Shell } from "@/components/layout/Shell";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { ShieldCheck, FileSearch, AlertTriangle, ChevronRight, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -53,10 +54,14 @@ function StatusPill({ status }: { status: string }) {
 export default function VerificationPage() {
   const [selectedReq, setSelectedReq] = useState<RequirementVerification | null>(null);
 
+  const { activeWorkspace } = useWorkspace();
+  const { activeAnalysis, isRepoLoading } = useRepository();
+
   const { data, isLoading } = useQuery({
-    queryKey: ["verification"],
+    queryKey: ["verification", activeWorkspace?.id, activeAnalysis?.id],
+    enabled: !!activeWorkspace?.id && !!activeAnalysis?.id,
     queryFn: () =>
-      apiFetch<VerificationList>("/v1/verification/?workspace_id=default&analysis_id=default").catch(() => ({
+      apiFetch<VerificationList>(`/v1/verification?workspace_id=${activeWorkspace!.id}&analysis_id=${activeAnalysis!.id}`).catch(() => ({
         requirement_verifications: [],
         obligation_verifications: [],
       })),
@@ -79,11 +84,19 @@ export default function VerificationPage() {
             <p className="text-[#5F6773] mt-1 font-mono text-xs tracking-wide">Evaluate obligation results.</p>
           </div>
 
-          {isLoading ? (
+          {isRepoLoading || isLoading ? (
             <div className="p-6 space-y-3">
               {[1, 2, 3].map(i => (
                 <div key={i} className="h-24 bg-[#0D0F12] rounded animate-pulse border border-[#20242B]" />
               ))}
+            </div>
+          ) : !activeAnalysis ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
+              <ShieldCheck className="w-10 h-10 text-[#20242B] mb-6" />
+              <div className="font-mono text-xs uppercase tracking-widest text-[#5F6773] mb-2">NO ANALYSIS</div>
+              <p className="text-[#8B93A1] max-w-xs text-sm leading-relaxed mb-4">
+                No analysis has been completed for this repository yet.
+              </p>
             </div>
           ) : reqs.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">

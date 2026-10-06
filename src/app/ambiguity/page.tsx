@@ -3,6 +3,7 @@
 import { Shell } from "@/components/layout/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { HelpCircle, AlertTriangle, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,10 +51,14 @@ const INTERP_STATUS_STYLES: Record<string, { icon: React.ReactNode; color: strin
 };
 
 export default function AmbiguityPage() {
+  const { activeWorkspace } = useWorkspace();
+  const { activeAnalysis, isRepoLoading } = useRepository();
+
   const { data, isLoading } = useQuery({
-    queryKey: ["ambiguity"],
+    queryKey: ["ambiguity", activeWorkspace?.id, activeAnalysis?.id],
+    enabled: !!activeWorkspace?.id && !!activeAnalysis?.id,
     queryFn: () =>
-      apiFetch<{ items: AmbiguityCase[] }>("/v1/ambiguity/?workspace_id=default&analysis_id=default").catch(() => ({ items: [] })),
+      apiFetch<{ items: AmbiguityCase[] }>(`/v1/ambiguity/?workspace_id=${activeWorkspace!.id}&analysis_id=${activeAnalysis!.id}`).catch(() => ({ items: [] })),
     retry: false,
   });
 
@@ -69,9 +74,17 @@ export default function AmbiguityPage() {
           </p>
         </header>
 
-        {isLoading ? (
+        {isRepoLoading || isLoading ? (
           <div className="space-y-4">
             {[1, 2].map(i => <div key={i} className="h-40 bg-[#0D0F12] rounded animate-pulse border border-[#20242B]" />)}
+          </div>
+        ) : !activeAnalysis ? (
+          <div className="border border-[#20242B] bg-[#08090B] rounded-lg p-16 flex flex-col items-center text-center">
+            <HelpCircle className="w-10 h-10 text-[#20242B] mb-6" />
+            <div className="font-mono text-xs uppercase tracking-widest text-[#5F6773] mb-2">No Analysis Found</div>
+            <p className="text-[#8B93A1] text-sm leading-relaxed max-w-xs">
+              No analysis has been completed for this repository yet.
+            </p>
           </div>
         ) : cases.length === 0 ? (
           <div className="border border-[#20242B] bg-[#08090B] rounded-lg p-16 flex flex-col items-center text-center">

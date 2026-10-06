@@ -3,6 +3,7 @@
 import { Shell } from "@/components/layout/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 import { GitCommitHorizontal, AlertTriangle, CheckCircle2, XCircle, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,10 +33,14 @@ const CI_STYLES = {
 };
 
 export default function DriftPage() {
+  const { activeWorkspace } = useWorkspace();
+  const { activeRepository, isRepoLoading } = useRepository();
+
   const { data, isLoading } = useQuery({
-    queryKey: ["drift"],
+    queryKey: ["drift", activeWorkspace?.id, activeRepository?.id],
+    enabled: !!activeWorkspace?.id && !!activeRepository?.id,
     queryFn: () =>
-      apiFetch<{ items: DriftReport[] }>("/v1/drift/?workspace_id=default&repository_id=default").catch(() => ({ items: [] })),
+      apiFetch<{ items: DriftReport[] }>(`/v1/drift?workspace_id=${activeWorkspace!.id}&repository_id=${activeRepository!.id}`).catch(() => ({ items: [] })),
     retry: false,
   });
 
@@ -51,9 +56,17 @@ export default function DriftPage() {
           </p>
         </header>
 
-        {isLoading ? (
+        {isRepoLoading || isLoading ? (
           <div className="space-y-4">
             {[1, 2].map(i => <div key={i} className="h-32 bg-[#0D0F12] rounded animate-pulse border border-[#20242B]" />)}
+          </div>
+        ) : !activeRepository ? (
+          <div className="border border-[#20242B] bg-[#08090B] rounded-lg p-16 flex flex-col items-center text-center">
+            <GitCommitHorizontal className="w-10 h-10 text-[#20242B] mb-6" />
+            <div className="font-mono text-xs uppercase tracking-widest text-[#5F6773] mb-2">No Repository Selected</div>
+            <p className="text-[#8B93A1] text-sm leading-relaxed max-w-xs">
+              Select a repository from the top bar to view drift reports.
+            </p>
           </div>
         ) : reports.length === 0 ? (
           <div className="border border-[#20242B] bg-[#08090B] rounded-lg p-16 flex flex-col items-center text-center">

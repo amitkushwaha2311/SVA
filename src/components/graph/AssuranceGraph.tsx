@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
   ReactFlow,
   MiniMap,
@@ -17,6 +17,9 @@ import {
   Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api";
+import { useWorkspace, useRepository } from "@/components/providers";
 
 interface SVANodeData {
   label: string;
@@ -45,56 +48,65 @@ const SVANode = ({ data }: NodeProps) => {
 
 const nodeTypes = {
   sva: SVANode,
+  intent: SVANode,
+  contract: SVANode,
 };
 
-const initialNodes = [
-  {
-    id: "intent-1",
-    type: "sva",
-    position: { x: 250, y: 0 },
-    data: { label: "Only project owners can delete projects", typeLabel: "Intent", status: "HUMAN_CONFIRMED" },
-  },
-  {
-    id: "req-1",
-    type: "sva",
-    position: { x: 250, y: 150 },
-    data: { label: "REQ-001", typeLabel: "Requirement", status: "PROVEN" },
-  },
-  {
-    id: "contract-1",
-    type: "sva",
-    position: { x: 250, y: 300 },
-    data: { label: "CON-001", typeLabel: "Contract", status: "READY" },
-  },
-  {
-    id: "evidence-1",
-    type: "sva",
-    position: { x: 100, y: 450 },
-    data: { label: "EV-82931 (Owner)", typeLabel: "Evidence", status: "VERIFIED" },
-  },
-  {
-    id: "evidence-2",
-    type: "sva",
-    position: { x: 400, y: 450 },
-    data: { label: "EV-82932 (Non-owner)", typeLabel: "Evidence", status: "VERIFIED" },
-  }
-];
-
-const initialEdges = [
-  { id: "e1-2", source: "intent-1", target: "req-1", animated: false, style: { stroke: "#20242B" } },
-  { id: "e2-3", source: "req-1", target: "contract-1", animated: false, style: { stroke: "#20242B" } },
-  { id: "e3-4", source: "contract-1", target: "evidence-1", animated: false, style: { stroke: "#20242B" } },
-  { id: "e3-5", source: "contract-1", target: "evidence-2", animated: false, style: { stroke: "#20242B" } },
-];
-
 export function AssuranceGraph() {
+  const { activeWorkspace } = useWorkspace();
+  const { activeAnalysis, isRepoLoading } = useRepository();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["graph", activeWorkspace?.id, activeAnalysis?.id],
+    enabled: !!activeWorkspace?.id && !!activeAnalysis?.id,
+    queryFn: () =>
+      apiFetch<{ nodes: any[]; edges: any[] }>(
+        `/v1/analyses/${activeAnalysis!.id}/graph?workspace_id=${activeWorkspace!.id}`
+      ).catch(() => ({ nodes: [], edges: [] })),
+    retry: false,
+  });
+
+  const initialNodes = data?.nodes || [];
+  const initialEdges = data?.edges || [];
+
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes as Node[]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges as Edge[]);
+
+  // Update when data changes
+  useEffect(() => {
+    setNodes(initialNodes as Node[]);
+    setEdges(initialEdges as Edge[]);
+  }, [data, setNodes, setEdges]);
 
   const onConnect = useCallback(
     (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+
+  if (isRepoLoading || isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center h-full">
+        <div className="animate-pulse flex flex-col items-center gap-4 text-[#5F6773]">
+          <div className="w-12 h-12 bg-[#12151A] rounded-lg border border-[#20242B]" />
+          Loading assurance graph...
+        </div>
+      </div>
+    );
+  }
+
+  if (!activeAnalysis) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center h-full p-12 text-center bg-[#08090B]">
+        <div className="w-16 h-16 bg-[#12151A] border border-[#20242B] rounded-xl flex items-center justify-center mb-6 shadow-md">
+          <div className="w-8 h-8 text-[#5F6773]" />
+        </div>
+        <div className="font-mono text-xs uppercase tracking-widest text-[#5F6773] mb-2">No Assurance Graph</div>
+        <p className="text-[#8B93A1] max-w-sm text-sm leading-relaxed">
+          No analysis has been completed for this repository yet. Run an analysis to generate the assurance graph.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: "100%", height: "100%" }} className="react-flow-dark">
