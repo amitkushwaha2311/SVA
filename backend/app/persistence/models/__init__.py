@@ -4,6 +4,7 @@ from .analysis import AnalysisRow
 from .job import AnalysisJobRow
 from .snapshot import RepositorySnapshotRow
 from .intent import IntentCandidateRow
+from .intent_event import IntentConfirmationEventRow
 from .semantic_ir import SemanticRequirementRow, SemanticConditionRow
 from .ambiguity import AmbiguityCaseRow, InterpretationRow, ClarificationQuestionRow
 from .contract import SemanticContractRow, BehaviorExpectationRow, InvariantRow, ContractAssumptionRow, VerificationTargetRow
@@ -30,6 +31,7 @@ __all__ = [
     "AnalysisJobRow",
     "RepositorySnapshotRow",
     "IntentCandidateRow",
+    "IntentConfirmationEventRow",
     "SemanticRequirementRow",
     "SemanticConditionRow",
     "AmbiguityCaseRow",

@@ -53,6 +53,11 @@ class IntentResponse(BaseModel):
     extraction_method: Optional[str]
     status: Optional[str]
     analysis_id: str
+    human_confirmed: bool = False
+    actor: Optional[str] = None
+    action: Optional[str] = None
+    resource: Optional[str] = None
+    assumptions: List[str] = []
 
     model_config = ConfigDict(from_attributes=True)
 

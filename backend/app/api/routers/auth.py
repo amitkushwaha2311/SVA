@@ -16,12 +16,19 @@ from app.core.config import settings
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 def _set_auth_cookies(response: Response, raw_token: str, csrf_token: str) -> None:
-    """Helper to consistently set session and CSRF cookies."""
+    """Helper to consistently set session and CSRF cookies.
+    
+    SameSite=None is required for cross-origin deployments (e.g. Vercel frontend
+    → Render backend). Secure=True is enforced via settings.SECURE_COOKIES so
+    SameSite=None is only active over HTTPS in production.
+    """
+    # samesite must be 'none' (with secure=True) for cross-origin cookie delivery
+    cookie_samesite = "none" if settings.SECURE_COOKIES else "lax"
     response.set_cookie(
         key="session",
         value=raw_token,
         httponly=True,
-        samesite="lax",
+        samesite=cookie_samesite,
         secure=settings.SECURE_COOKIES,
         max_age=settings.SESSION_TTL_SECONDS,
         path="/"
@@ -32,7 +39,7 @@ def _set_auth_cookies(response: Response, raw_token: str, csrf_token: str) -> No
         key=csrf_key,
         value=csrf_token,
         httponly=False,  # Must be readable by frontend for double-submit
-        samesite="lax",
+        samesite=cookie_samesite,
         secure=settings.SECURE_COOKIES,
         max_age=settings.SESSION_TTL_SECONDS,
         path="/"
@@ -155,9 +162,10 @@ async def logout(request: Request, response: Response, db: AsyncSession = Depend
         await revoke_session(token_to_revoke, db)
         await db.commit()
         
-    response.delete_cookie(key="session", path="/", secure=settings.SECURE_COOKIES, samesite="lax")
+    cookie_samesite = "none" if settings.SECURE_COOKIES else "lax"
+    response.delete_cookie(key="session", path="/", secure=settings.SECURE_COOKIES, samesite=cookie_samesite)
     csrf_key = "__Host-csrf" if settings.SECURE_COOKIES else "csrf_token"
-    response.delete_cookie(key=csrf_key, path="/", secure=settings.SECURE_COOKIES, samesite="lax")
+    response.delete_cookie(key=csrf_key, path="/", secure=settings.SECURE_COOKIES, samesite=cookie_samesite)
     
     response.status_code = 204
     return None
