@@ -209,8 +209,8 @@ export function RepositoryProvider({ children }: { children: React.ReactNode }) 
       ).catch(() => ({ analyses: [] })),
   });
 
-  const analyses = analysesData?.analyses || [];
-  const sortedAnalyses = [...analyses].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  const completedAnalyses = (analysesData?.analyses || []).filter(a => a.status === "COMPLETED");
+  const sortedAnalyses = [...completedAnalyses].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   const activeAnalysis = sortedAnalyses.length > 0 ? sortedAnalyses[0] : null;
 
   return (
