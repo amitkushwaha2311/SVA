@@ -265,3 +265,57 @@ describe('Authentication form validation', () => {
     consoleSpy.mockRestore();
   });
 });
+
+// ─── 7. Routing, Layout Separation & Protected Shell ──────────────────────────
+
+describe('Routing and Layout separation', () => {
+  it('public landing page contains no sidebar or workspace toolbar', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8');
+
+    // Extract the unauthenticated public branch block: if (!user) { ... }
+    const publicBranchMatch = pageContent.match(/if\s*\(!user\)\s*\{([\s\S]*?)\n\s*\}\n\s*\/\/\s*──\s*Authenticated/);
+    expect(publicBranchMatch).not.toBeNull();
+    const publicBranchContent = publicBranchMatch![1];
+
+    // Must NOT contain <Shell> in the unauthenticated public branch
+    expect(publicBranchContent).not.toContain('<Shell>');
+    // Must contain Link to /login for Analyze Repository
+    expect(publicBranchContent).toContain('href="/login"');
+    // Must contain Public Header / Navigation
+    expect(publicBranchContent).toContain('Sign In');
+    expect(publicBranchContent).toContain('Create Account');
+    expect(publicBranchContent).toContain('Analyze Repository');
+  });
+
+  it('authenticated dashboard routes use Shell and handle missing workspace safely', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8');
+
+    // Authenticated missing workspace branch must wrap in <Shell>
+    expect(pageContent).toContain('if (!activeWorkspace)');
+    const missingWsMatch = pageContent.match(/if\s*\(!activeWorkspace\)\s*\{([\s\S]*?)\n\s*\}\n/);
+    expect(missingWsMatch).not.toBeNull();
+    expect(missingWsMatch![1]).toContain('<Shell>');
+    expect(missingWsMatch![1]).toContain('No Workspace Selected');
+
+    // Empty state for authenticated users must render Analyze Repository as button opening modal inside Shell
+    const emptyStateMatch = pageContent.match(/if\s*\(!hasRepos\)\s*\{([\s\S]*?)\n\s*\}\n\s*\/\/\s*──\s*Authenticated:\s*Dashboard/);
+    expect(emptyStateMatch).not.toBeNull();
+    expect(emptyStateMatch![1]).toContain('<Shell>');
+    expect(emptyStateMatch![1]).toContain('<button');
+    expect(emptyStateMatch![1]).toContain('Analyze Repository');
+  });
+
+  it('Shell enforces authentication and redirects unauthenticated users to /login', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const shellContent = fs.readFileSync(path.resolve(__dirname, '../components/layout/Shell.tsx'), 'utf-8');
+
+    expect(shellContent).toContain('useAuth()');
+    expect(shellContent).toContain('useRouter()');
+    expect(shellContent).toContain('router.replace("/login")');
+  });
+});
