@@ -29,7 +29,7 @@ export default function Dashboard() {
 
   const { data: reposData, isLoading, refetch: refetchRepos } = useQuery({
     queryKey: ["repositories", activeWorkspace?.id],
-    enabled: !!activeWorkspace?.id,
+    enabled: !!activeWorkspace?.id && !!user,
     queryFn: () =>
       apiFetch<{ items: Repository[] }>(
         `/v1/orchestration/repositories?workspace_id=${activeWorkspace!.id}`
@@ -37,42 +37,57 @@ export default function Dashboard() {
     retry: false,
   });
 
-  // ── Loading ────────────────────────────────────────────────────────────────
-  if (isAuthLoading || (user && isLoading && activeWorkspace)) {
+  // ── Auth Loading State ───────────────────────────────────────────────────────
+  if (isAuthLoading) {
     return (
-      <Shell>
-        <div className="flex items-center justify-center h-48">
-          <div className="animate-pulse space-y-4 flex flex-col items-center">
-            <div className="w-12 h-12 bg-[#2A221B] rounded-xl border border-[#514236]" />
-            <div className="w-32 h-4 bg-[#2A221B] rounded-md" />
+      <div className="min-h-screen bg-[#17130F] flex items-center justify-center p-6 text-[#F5EFE5]">
+        <div className="animate-pulse space-y-4 flex flex-col items-center">
+          <div className="w-12 h-12 bg-[#2A221B] rounded-xl border border-[#514236] flex items-center justify-center">
+            <Box className="w-6 h-6 text-[#F4D9A0] opacity-80" />
           </div>
-        </div>
-      </Shell>
-    );
-  }
-
-  // ── Authenticated but no workspace selected ─────────────────────────────────
-  if (user && !activeWorkspace) {
-    return (
-      <div className="min-h-screen bg-[#17130F] flex items-center justify-center p-6">
-        <div className="bg-[#211B16] border border-[#514236] rounded-2xl p-8 max-w-sm text-center space-y-4 shadow-xl">
-          <Box className="w-8 h-8 text-[#F4D9A0] mx-auto opacity-80" />
-          <h2 className="font-serif text-xl text-[#F5EFE5]">No Workspace Selected</h2>
-          <p className="text-[#B5AA9C] font-mono text-xs">Select or create a workspace to continue.</p>
+          <div className="w-32 h-3 bg-[#2A221B] rounded-md" />
         </div>
       </div>
     );
   }
 
-  const hasRepos = reposData && reposData.items.length > 0;
-
-  // ── Public Landing Page / Empty State ───────────────────────────────────────
-  if (!user || !hasRepos) {
+  // ── Public Marketing Landing Page (Unauthenticated) ─────────────────────────
+  if (!user) {
     return (
-      <Shell>
-        <div className="flex flex-col items-center justify-center px-4 py-12 md:py-16">
+      <div className="min-h-screen bg-[#17130F] text-[#F5EFE5] flex flex-col selection:bg-[#F4D9A0]/20 selection:text-[#F4D9A0]">
+        {/* Public Header / Navigation */}
+        <header className="border-b border-[#514236]/60 bg-[#17130F]/80 backdrop-blur-md sticky top-0 z-30">
+          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-lg bg-[#2A221B] border border-[#514236] flex items-center justify-center group-hover:border-[#F4D9A0]/50 transition-colors shadow-inner">
+                <Box className="w-4 h-4 text-[#F4D9A0]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif text-lg tracking-wider font-semibold text-[#F5EFE5] leading-none">SVA</span>
+                <span className="text-[9px] font-mono text-[#B5AA9C] tracking-widest uppercase mt-0.5">Assurance</span>
+              </div>
+            </Link>
+
+            <nav className="flex items-center gap-4">
+              <Link
+                href="/login"
+                className="text-sm font-medium text-[#B5AA9C] hover:text-[#F5EFE5] transition-colors px-3 py-1.5"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                className="text-sm font-medium px-4 py-2 rounded-xl bg-[#2A221B] border border-[#514236] text-[#F5EFE5] hover:border-[#F4D9A0]/60 hover:text-[#F4D9A0] transition-all shadow-sm"
+              >
+                Create Account
+              </Link>
+            </nav>
+          </div>
+        </header>
+
+        {/* Public Hero & Marketing Content */}
+        <main className="flex-1 flex flex-col items-center justify-center px-4 py-16 md:py-24">
           <div className="max-w-2xl text-center space-y-8">
-            
             {/* Elegant Emblem */}
             <div className="relative inline-block mx-auto mb-2">
               <div className="absolute inset-0 bg-[#F4D9A0]/10 rounded-2xl blur-xl" />
@@ -97,23 +112,115 @@ export default function Dashboard() {
             </div>
 
             <div className="pt-2">
-              {!user ? (
-                <Link
-                  href="/login"
-                  className="bg-[#F4D9A0] text-[#17130F] font-semibold px-8 py-3.5 rounded-xl hover:bg-[#fae6bb] transition-all inline-flex items-center gap-2.5 group shadow-lg shadow-[#F4D9A0]/10 active:scale-95"
-                >
-                  Analyze Repository
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              ) : (
-                <button
-                  onClick={() => setShowAnalyzeModal(true)}
-                  className="bg-[#F4D9A0] text-[#17130F] font-semibold px-8 py-3.5 rounded-xl hover:bg-[#fae6bb] transition-all inline-flex items-center gap-2.5 group shadow-lg shadow-[#F4D9A0]/10 active:scale-95"
-                >
-                  Analyze Repository
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-              )}
+              <Link
+                href="/login"
+                className="bg-[#F4D9A0] text-[#17130F] font-semibold px-8 py-3.5 rounded-xl hover:bg-[#fae6bb] transition-all inline-flex items-center gap-2.5 group shadow-lg shadow-[#F4D9A0]/10 active:scale-95"
+              >
+                Analyze Repository
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+
+            <div className="border border-[#514236] bg-[#211B16] rounded-xl p-5 text-left w-full max-w-md mx-auto shadow-xl">
+              <div className="text-[10px] font-mono text-[#C8792C] uppercase tracking-widest mb-2 flex items-center gap-2">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Security Notice
+              </div>
+              <p className="text-sm text-[#B5AA9C] leading-relaxed">
+                Repository contents are treated as <span className="text-[#F5EFE5] font-mono font-medium">UNTRUSTED DATA</span>.
+                No repository code is executed during static analysis. Evidence is independently verified.
+              </p>
+            </div>
+          </div>
+        </main>
+
+        {/* Minimal Footer */}
+        <footer className="border-t border-[#514236]/40 py-6 text-center text-xs font-mono text-[#847768]">
+          SVA Semantic Verification &amp; Assurance · v2.0
+        </footer>
+      </div>
+    );
+  }
+
+  // ── Authenticated: Workspace Selection Missing ──────────────────────────────
+  if (!activeWorkspace) {
+    return (
+      <Shell>
+        <div className="flex-1 flex flex-col items-center justify-center min-h-[60vh] p-8 text-center space-y-4">
+          <div className="w-16 h-16 bg-[#211B16] border border-[#514236] rounded-2xl flex items-center justify-center mx-auto shadow-xl">
+            <Box className="w-8 h-8 text-[#F4D9A0] opacity-80" />
+          </div>
+          <div className="space-y-2 max-w-sm">
+            <h2 className="font-serif text-2xl text-[#F5EFE5]">No Workspace Selected</h2>
+            <p className="text-[#B5AA9C] font-mono text-xs leading-relaxed">
+              Select or create a workspace from the header dropdown above to view repositories and assurance metrics.
+            </p>
+          </div>
+        </div>
+      </Shell>
+    );
+  }
+
+  // ── Authenticated: Repository Loading State ─────────────────────────────────
+  if (isLoading) {
+    return (
+      <Shell>
+        <div className="flex items-center justify-center h-48">
+          <div className="animate-pulse space-y-4 flex flex-col items-center">
+            <div className="w-12 h-12 bg-[#2A221B] rounded-xl border border-[#514236]" />
+            <div className="w-32 h-4 bg-[#2A221B] rounded-md" />
+          </div>
+        </div>
+      </Shell>
+    );
+  }
+
+  const hasRepos = reposData && reposData.items.length > 0;
+
+  const handleAnalyzeClick = () => {
+    if (activeWorkspace) {
+      setShowAnalyzeModal(true);
+    }
+  };
+
+  // ── Authenticated: Empty State (No Repositories Yet) ────────────────────────
+  if (!hasRepos) {
+    return (
+      <Shell>
+        <div className="flex flex-col items-center justify-center px-4 py-12 md:py-16">
+          <div className="max-w-2xl text-center space-y-8">
+            {/* Elegant Emblem */}
+            <div className="relative inline-block mx-auto mb-2">
+              <div className="absolute inset-0 bg-[#F4D9A0]/10 rounded-2xl blur-xl" />
+              <div className="relative w-16 h-16 bg-[#211B16] border border-[#514236] rounded-2xl flex items-center justify-center mx-auto shadow-2xl">
+                <Box className="w-8 h-8 text-[#F4D9A0]" />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#514236] bg-[#2A221B]/80 text-[#F4D9A0] text-xs font-mono tracking-widest uppercase">
+                <Sparkles className="w-3.5 h-3.5 text-[#F4D9A0]" />
+                Semantic Verification Engine
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-tight text-[#F5EFE5] leading-[1.12]">
+                Software that can prove<br />
+                <span className="italic text-[#F4D9A0]">it understands your intent.</span>
+              </h1>
+              <p className="text-[#B5AA9C] text-base md:text-lg leading-relaxed max-w-xl mx-auto font-sans">
+                SVA traces software behavior back to human intent using rigorous provenance,
+                semantic contracts, and independently verifiable behavioral evidence.
+              </p>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={handleAnalyzeClick}
+                className="bg-[#F4D9A0] text-[#17130F] font-semibold px-8 py-3.5 rounded-xl hover:bg-[#fae6bb] transition-all inline-flex items-center gap-2.5 group shadow-lg shadow-[#F4D9A0]/10 active:scale-95"
+              >
+                Analyze Repository
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
 
             <div className="border border-[#514236] bg-[#211B16] rounded-xl p-5 text-left w-full max-w-md mx-auto shadow-xl">
@@ -140,7 +247,7 @@ export default function Dashboard() {
     );
   }
 
-  // ── Dashboard with repositories ────────────────────────────────────────────
+  // ── Authenticated: Dashboard with Repositories ──────────────────────────────
   return (
     <Shell>
       {/* Header row */}
@@ -150,7 +257,7 @@ export default function Dashboard() {
           <p className="text-xs text-[#B5AA9C] font-mono mt-0.5">{reposData!.items.length} registered repositories</p>
         </div>
         <button
-          onClick={() => setShowAnalyzeModal(true)}
+          onClick={handleAnalyzeClick}
           className="flex items-center gap-2 px-4 py-2 bg-[#2A221B] border border-[#514236] hover:border-[#F4D9A0]/50 rounded-xl text-sm font-medium text-[#F5EFE5] hover:text-[#F4D9A0] transition-all shadow-sm"
         >
           <Plus className="w-4 h-4 text-[#F4D9A0]" />
