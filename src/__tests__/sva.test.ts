@@ -318,4 +318,26 @@ describe('Routing and Layout separation', () => {
     expect(shellContent).toContain('useRouter()');
     expect(shellContent).toContain('router.replace("/login")');
   });
+
+  it('public landing page includes all core sections and allows natural scrolling', async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8');
+
+    const publicBranchMatch = pageContent.match(/if\s*\(!user\)\s*\{([\s\S]*?)\n\s*\}\n\s*\/\/\s*──\s*Authenticated/);
+    expect(publicBranchMatch).not.toBeNull();
+    const publicContent = publicBranchMatch![1];
+
+    // Core architectural & product sections
+    expect(publicContent).toContain('Architectural Pillars of Semantic Assurance');
+    expect(publicContent).toContain('Deterministic Verification States');
+    expect(publicContent).toContain('The Verification Lifecycle');
+    expect(publicContent).toContain('Air-Gapped Security Architecture');
+    expect(publicContent).toContain('Ready to Verify Software Intent?');
+    expect(publicContent).toContain('All Systems Operational');
+
+    // Natural scrolling structure: no overflow-hidden on outer container
+    expect(publicContent).not.toContain('overflow-hidden bg-[#17130F] text-[#F5EFE5] flex flex-col');
+    expect(publicContent).toContain('overflow-x-hidden');
+  });
 });
