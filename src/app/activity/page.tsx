@@ -4,12 +4,6 @@ import { Shell } from "@/components/layout/Shell";
 import { Activity, Database, Search, GitCommitHorizontal, ShieldCheck, AlertTriangle, CheckCircle2, LogOut, Eye, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Activity page shows real audit events if available.
-// Since Phase 16 does not yet have a live activity stream API hooked into session events,
-// we show an honest empty state explaining what events will appear.
-// Historical events from sessions table and analysis runs will be shown here once
-// the /api/v1/activity endpoint is wired to the backend audit log.
-
 type EventType =
   | "ANALYSIS_STARTED"
   | "REPOSITORY_SCANNED"
@@ -25,20 +19,18 @@ type EventType =
 
 const EVENT_META: Record<EventType, { icon: React.ReactNode; color: string; label: string }> = {
   ANALYSIS_STARTED:       { icon: <Activity className="w-3.5 h-3.5" />, color: "text-[#06B6D4]", label: "Analysis started" },
-  REPOSITORY_SCANNED:     { icon: <Database className="w-3.5 h-3.5" />, color: "text-[#8B93A1]", label: "Repository scanned" },
-  INTENT_DISCOVERED:      { icon: <Search className="w-3.5 h-3.5" />, color: "text-[#F5F7FA]", label: "Intent candidate discovered" },
+  REPOSITORY_SCANNED:     { icon: <Database className="w-3.5 h-3.5" />, color: "text-[#B5AA9C]", label: "Repository scanned" },
+  INTENT_DISCOVERED:      { icon: <Search className="w-3.5 h-3.5" />, color: "text-[#F4D9A0]", label: "Intent candidate discovered" },
   AMBIGUITY_DETECTED:     { icon: <AlertTriangle className="w-3.5 h-3.5" />, color: "text-[#F59E0B]", label: "Ambiguity detected" },
   REQUIREMENT_CONFIRMED:  { icon: <CheckCircle2 className="w-3.5 h-3.5" />, color: "text-[#10B981]", label: "Requirement confirmed" },
   CONTRACT_COMPILED:      { icon: <FileText className="w-3.5 h-3.5" />, color: "text-[#10B981]", label: "Contract compiled" },
-  EVIDENCE_RECORDED:      { icon: <Eye className="w-3.5 h-3.5" />, color: "text-[#8B93A1]", label: "Evidence recorded" },
-  VERIFICATION_PERFORMED: { icon: <ShieldCheck className="w-3.5 h-3.5" />, color: "text-[#8B93A1]", label: "Verification performed" },
-  DRIFT_DETECTED:         { icon: <GitCommitHorizontal className="w-3.5 h-3.5" />, color: "text-[#D97706]", label: "Drift detected" },
-  SESSION_CREATED:        { icon: <CheckCircle2 className="w-3.5 h-3.5" />, color: "text-[#5F6773]", label: "Session created" },
-  USER_LOGOUT:            { icon: <LogOut className="w-3.5 h-3.5" />, color: "text-[#5F6773]", label: "User logged out" },
+  EVIDENCE_RECORDED:      { icon: <Eye className="w-3.5 h-3.5" />, color: "text-[#F4D9A0]", label: "Evidence recorded" },
+  VERIFICATION_PERFORMED: { icon: <ShieldCheck className="w-3.5 h-3.5" />, color: "text-[#B5AA9C]", label: "Verification performed" },
+  DRIFT_DETECTED:         { icon: <GitCommitHorizontal className="w-3.5 h-3.5" />, color: "text-[#C084FC]", label: "Drift detected" },
+  SESSION_CREATED:        { icon: <CheckCircle2 className="w-3.5 h-3.5" />, color: "text-[#847768]", label: "Session created" },
+  USER_LOGOUT:            { icon: <LogOut className="w-3.5 h-3.5" />, color: "text-[#847768]", label: "User logged out" },
 };
 
-// Placeholder events from a real analysis run — these would come from
-// /api/v1/activity once that endpoint is implemented.
 const PLACEHOLDER_EVENTS: Array<{
   id: string;
   type: EventType;
@@ -54,64 +46,67 @@ export default function ActivityPage() {
   return (
     <Shell>
       <div className="max-w-4xl mx-auto space-y-8">
-        <header className="flex justify-between items-end">
+        <header className="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
           <div>
-            <h1 className="text-3xl font-sans tracking-tight text-[#F5F7FA]">Activity</h1>
-            <p className="text-[#8B93A1] mt-2 font-mono text-xs tracking-wide uppercase">
-              Audit timeline — all system and user events.
+            <div className="text-[10px] font-mono text-[#F4D9A0] uppercase tracking-widest mb-1.5 font-medium">System Telemetry</div>
+            <h1 className="text-3xl md:text-4xl font-serif tracking-tight text-[#F5EFE5]">Activity</h1>
+            <p className="text-[#B5AA9C] mt-2 font-mono text-xs tracking-wide uppercase">
+              Audit timeline — all verified system and user events.
             </p>
           </div>
-          <div className="text-xs font-mono text-[#5F6773] text-right">
-            <div>Audit logging: <span className="text-[#10B981]">ENABLED</span></div>
+          <div className="text-xs font-mono text-[#847768] sm:text-right">
+            <div>Audit logging: <span className="text-[#10B981] font-semibold">ENABLED</span></div>
           </div>
         </header>
 
         {/* Event Type Legend */}
-        <div className="border border-[#20242B] bg-[#08090B] rounded-lg p-6">
-          <div className="text-[10px] font-mono text-[#5F6773] uppercase tracking-widest mb-4">Event Types</div>
+        <div className="border border-[#514236] bg-[#211B16] rounded-2xl p-6 shadow-xl">
+          <div className="text-[10px] font-mono text-[#847768] uppercase tracking-widest mb-4 font-medium">Event Classifications</div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {(Object.entries(EVENT_META) as [EventType, typeof EVENT_META[EventType]][]).map(([type, meta]) => (
               <div key={type} className="flex items-center gap-2">
                 <span className={meta.color}>{meta.icon}</span>
-                <span className="text-xs text-[#5F6773]">{meta.label}</span>
+                <span className="text-xs text-[#B5AA9C]">{meta.label}</span>
               </div>
             ))}
           </div>
         </div>
 
         {events.length === 0 ? (
-          <div className="border border-[#20242B] bg-[#08090B] rounded-lg p-16 flex flex-col items-center text-center">
-            <Activity className="w-10 h-10 text-[#20242B] mb-6" />
-            <div className="font-mono text-xs uppercase tracking-widest text-[#5F6773] mb-3">No Activity</div>
-            <p className="text-[#8B93A1] text-sm leading-relaxed max-w-md mb-6">
-              Activity events will appear here as analyses are run, intent is discovered, contracts are compiled, and evidence is recorded.
+          <div className="border border-[#514236] bg-[#211B16] rounded-2xl p-14 flex flex-col items-center text-center shadow-xl">
+            <div className="w-14 h-14 rounded-2xl bg-[#2A221B] border border-[#514236] flex items-center justify-center mb-6">
+              <Activity className="w-7 h-7 text-[#847768]" />
+            </div>
+            <div className="font-mono text-xs uppercase tracking-widest text-[#847768] mb-3 font-medium">No Historical Activity</div>
+            <p className="text-[#B5AA9C] text-sm leading-relaxed max-w-md mb-6">
+              Activity events will appear here as analyses are executed, intent candidates discovered, contracts compiled, and behavioral evidence verified.
             </p>
-            <div className="border border-[#20242B] bg-[#0D0F12] rounded p-4 text-left max-w-md w-full font-mono text-xs text-[#5F6773] space-y-2">
-              <div className="text-[#8B93A1] mb-3 uppercase tracking-widest">Events will include:</div>
+            <div className="border border-[#514236] bg-[#2A221B] rounded-xl p-5 text-left max-w-md w-full font-mono text-xs text-[#847768] space-y-2.5">
+              <div className="text-[#F4D9A0] mb-3 uppercase tracking-widest font-medium">Monitored pipeline transitions:</div>
               {Object.values(EVENT_META).map(m => (
                 <div key={m.label} className="flex items-center gap-2">
-                  <span className="text-[#20242B]">→</span> {m.label}
+                  <span className="text-[#514236]">→</span> <span className="text-[#B5AA9C]">{m.label}</span>
                 </div>
               ))}
             </div>
           </div>
         ) : (
-          <div className="border border-[#20242B] bg-[#08090B] rounded-lg overflow-hidden">
-            <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] gap-4 px-6 py-2 border-b border-[#20242B] bg-[#0D0F12]">
+          <div className="border border-[#514236] bg-[#211B16] rounded-2xl overflow-hidden shadow-xl">
+            <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] gap-4 px-6 py-3 border-b border-[#514236] bg-[#2A221B]/60">
               {["", "Timestamp", "Actor", "Action", "Resource / Result"].map((h, i) => (
-                <div key={i} className="text-[10px] font-mono uppercase tracking-widest text-[#5F6773]">{h}</div>
+                <div key={i} className="text-[10px] font-mono uppercase tracking-widest text-[#847768] font-medium">{h}</div>
               ))}
             </div>
-            <div className="divide-y divide-[#20242B]">
+            <div className="divide-y divide-[#514236]">
               {events.map(ev => {
                 const meta = EVENT_META[ev.type];
                 return (
-                  <div key={ev.id} className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] gap-4 px-6 py-3 items-center hover:bg-[#0D0F12] transition-colors">
+                  <div key={ev.id} className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] gap-4 px-6 py-3.5 items-center hover:bg-[#2A221B]/40 transition-colors">
                     <span className={meta.color}>{meta.icon}</span>
-                    <span className="font-mono text-xs text-[#5F6773]">{new Date(ev.timestamp).toLocaleString()}</span>
-                    <span className="font-mono text-xs text-[#8B93A1] truncate">{ev.actor}</span>
-                    <span className="font-mono text-xs text-[#F5F7FA]">{meta.label}</span>
-                    <span className="font-mono text-xs text-[#8B93A1] truncate">{ev.resource}</span>
+                    <span className="font-mono text-xs text-[#847768]">{new Date(ev.timestamp).toLocaleString()}</span>
+                    <span className="font-mono text-xs text-[#B5AA9C] truncate">{ev.actor}</span>
+                    <span className="font-mono text-xs text-[#F5EFE5] font-medium">{meta.label}</span>
+                    <span className="font-mono text-xs text-[#B5AA9C] truncate">{ev.resource}</span>
                   </div>
                 );
               })}

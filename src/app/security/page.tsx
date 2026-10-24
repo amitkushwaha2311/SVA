@@ -8,21 +8,22 @@ export default function SecurityCenter() {
     <Shell>
       <div className="max-w-4xl mx-auto space-y-8">
         <header>
-          <h1 className="text-3xl font-sans tracking-tight text-[#F5F7FA] flex items-center gap-3">
+          <div className="text-[10px] font-mono text-[#10B981] uppercase tracking-widest mb-1.5 font-medium">Boundary Assurance</div>
+          <h1 className="text-3xl md:text-4xl font-serif tracking-tight text-[#F5EFE5] flex items-center gap-3">
             <ShieldCheck className="w-8 h-8 text-[#10B981]" />
             Security Center
           </h1>
-          <p className="text-[#8B93A1] mt-2 font-mono text-sm tracking-wide">
-            Enterprise boundary controls and environment guarantees.
+          <p className="text-[#B5AA9C] mt-2 font-mono text-xs md:text-sm tracking-wide">
+            Enterprise boundary controls and verifiable environment isolation guarantees.
           </p>
         </header>
 
-        <div className="bg-[#08090B] border border-[#20242B] rounded-lg p-8">
-          <div className="grid grid-cols-2 gap-x-12 gap-y-8">
+        <div className="bg-[#211B16] border border-[#514236] rounded-2xl p-8 md:p-10 shadow-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
             <SecurityControl 
               title="Repository"
               status="UNTRUSTED"
-              description="Repository contents are treated as untrusted data."
+              description="Repository contents are treated as untrusted data at all stages."
               icon={<FileCode />}
               color="amber"
             />
@@ -30,7 +31,7 @@ export default function SecurityCenter() {
             <SecurityControl 
               title="Filesystem"
               status="RESTRICTED"
-              description="Read-only access to isolated workspace paths."
+              description="Read-only access strictly confined to isolated workspace paths."
               icon={<Lock />}
               color="green"
             />
@@ -38,7 +39,7 @@ export default function SecurityCenter() {
             <SecurityControl 
               title="Network"
               status="DENIED"
-              description="Outbound network access is disabled."
+              description="Outbound network access is disabled during semantic verification."
               icon={<Globe />}
               color="amber"
             />
@@ -46,7 +47,7 @@ export default function SecurityCenter() {
             <SecurityControl 
               title="Secrets"
               status="DENIED"
-              description="No environment secrets injected to execution context."
+              description="No environment secrets or credentials injected to execution context."
               icon={<Key />}
               color="amber"
             />
@@ -54,7 +55,7 @@ export default function SecurityCenter() {
             <SecurityControl 
               title="Shell"
               status="DISABLED"
-              description="Subprocess and shell execution explicitly disabled."
+              description="Subprocess and shell execution explicitly disabled in sandbox."
               icon={<Terminal />}
               color="amber"
             />
@@ -70,7 +71,7 @@ export default function SecurityCenter() {
             <SecurityControl 
               title="Path Guard"
               status="ACTIVE"
-              description="Traversal protection enabled for all file operations."
+              description="Traversal protection enabled for all file and directory operations."
               icon={<ShieldCheck />}
               color="green"
             />
@@ -78,7 +79,7 @@ export default function SecurityCenter() {
             <SecurityControl 
               title="Audit Logging"
               status="ENABLED"
-              description="All boundary transitions are cryptographically logged."
+              description="All boundary transitions are cryptographically logged and verifiable."
               icon={<FileText />}
               color="green"
             />
@@ -92,25 +93,25 @@ export default function SecurityCenter() {
 function SecurityControl({ title, status, description, icon, color }: any) {
   const colorMap: any = {
     green: { text: "text-[#10B981]", border: "border-[#10B981]/30", bg: "bg-[#10B981]/10", icon: "text-[#10B981]" },
-    amber: { text: "text-[#F59E0B]", border: "border-[#F59E0B]/30", bg: "bg-[#F59E0B]/10", icon: "text-[#F59E0B]" },
+    amber: { text: "text-[#F4D9A0]", border: "border-[#514236]", bg: "bg-[#2A221B]", icon: "text-[#F4D9A0]" },
     red: { text: "text-[#EF4444]", border: "border-[#EF4444]/30", bg: "bg-[#EF4444]/10", icon: "text-[#EF4444]" },
   };
 
   const c = colorMap[color] || colorMap.green;
 
   return (
-    <div className="flex gap-4 items-start border-b border-[#20242B] pb-6 last:border-0 last:pb-0">
-      <div className={`w-10 h-10 rounded border ${c.border} ${c.bg} flex items-center justify-center shrink-0`}>
+    <div className="flex gap-4 items-start border-b border-[#514236] pb-6 last:border-0 last:pb-0">
+      <div className={`w-11 h-11 rounded-xl border ${c.border} ${c.bg} flex items-center justify-center shrink-0 shadow-inner`}>
         <div className={`w-5 h-5 ${c.icon}`}>{icon}</div>
       </div>
-      <div>
-        <div className="flex items-center gap-3 mb-1">
-          <h3 className="font-medium text-[#F5F7FA]">{title}</h3>
-          <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border ${c.border} ${c.text}`}>
+      <div className="space-y-1">
+        <div className="flex items-center gap-3">
+          <h3 className="font-serif text-base text-[#F5EFE5] font-medium">{title}</h3>
+          <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full border ${c.border} ${c.text} font-medium`}>
             {status}
           </span>
         </div>
-        <p className="text-sm text-[#8B93A1] leading-relaxed">
+        <p className="text-xs md:text-sm text-[#B5AA9C] leading-relaxed font-sans">
           {description}
         </p>
       </div>
