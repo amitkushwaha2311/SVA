@@ -30,18 +30,18 @@ interface SVANodeData {
 const SVANode = ({ data }: NodeProps) => {
   const nodeData = data as unknown as SVANodeData;
   return (
-    <div className="px-4 py-2 shadow-md rounded-md bg-[#12151A] border border-[#20242B] min-w-[200px]">
-      <Handle type="target" position={Position.Top} className="w-16 !bg-[#20242B]" />
+    <div className="px-4 py-2.5 shadow-xl rounded-xl bg-[#211B16] border border-[#514236] min-w-[200px] hover:border-[#F4D9A0]/60 transition-colors">
+      <Handle type="target" position={Position.Top} className="w-16 !bg-[#514236]" />
       <div className="flex flex-col">
-        <div className="text-[10px] font-mono text-[#5F6773] uppercase tracking-widest">{nodeData.typeLabel}</div>
-        <div className="text-sm font-bold text-[#F5F7FA] mt-1 truncate max-w-[180px]">{nodeData.label}</div>
+        <div className="text-[10px] font-mono text-[#847768] uppercase tracking-widest font-medium">{nodeData.typeLabel}</div>
+        <div className="text-sm font-serif font-medium text-[#F5EFE5] mt-1 truncate max-w-[180px]">{nodeData.label}</div>
         {nodeData.status && (
-          <div className="mt-2 text-[10px] font-mono tracking-widest text-[#8B93A1]">
-            STATUS: <span className="text-[#10B981]">{nodeData.status}</span>
+          <div className="mt-2 text-[10px] font-mono tracking-widest text-[#B5AA9C]">
+            STATUS: <span className="text-[#10B981] font-semibold">{nodeData.status}</span>
           </div>
         )}
       </div>
-      <Handle type="source" position={Position.Bottom} className="w-16 !bg-[#20242B]" />
+      <Handle type="source" position={Position.Bottom} className="w-16 !bg-[#514236]" />
     </div>
   );
 };
@@ -85,10 +85,10 @@ export function AssuranceGraph() {
 
   if (isRepoLoading || isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center h-full">
-        <div className="animate-pulse flex flex-col items-center gap-4 text-[#5F6773]">
-          <div className="w-12 h-12 bg-[#12151A] rounded-lg border border-[#20242B]" />
-          Loading assurance graph...
+      <div className="flex-1 flex items-center justify-center h-full bg-[#17130F]">
+        <div className="animate-pulse flex flex-col items-center gap-4 text-[#847768]">
+          <div className="w-12 h-12 bg-[#2A221B] rounded-xl border border-[#514236]" />
+          <span className="font-mono text-xs">Loading assurance topology...</span>
         </div>
       </div>
     );
@@ -96,12 +96,12 @@ export function AssuranceGraph() {
 
   if (!activeAnalysis) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center h-full p-12 text-center bg-[#08090B]">
-        <div className="w-16 h-16 bg-[#12151A] border border-[#20242B] rounded-xl flex items-center justify-center mb-6 shadow-md">
-          <div className="w-8 h-8 text-[#5F6773]" />
+      <div className="flex-1 flex flex-col items-center justify-center h-full p-12 text-center bg-[#17130F]">
+        <div className="w-16 h-16 bg-[#211B16] border border-[#514236] rounded-2xl flex items-center justify-center mb-6 shadow-md">
+          <div className="w-8 h-8 rounded-full bg-[#514236]/50" />
         </div>
-        <div className="font-mono text-xs uppercase tracking-widest text-[#5F6773] mb-2">No Assurance Graph</div>
-        <p className="text-[#8B93A1] max-w-sm text-sm leading-relaxed">
+        <div className="font-mono text-xs uppercase tracking-widest text-[#847768] mb-2 font-medium">No Assurance Graph</div>
+        <p className="text-[#B5AA9C] max-w-sm text-sm leading-relaxed">
           No analysis has been completed for this repository yet. Run an analysis to generate the assurance graph.
         </p>
       </div>
@@ -118,16 +118,16 @@ export function AssuranceGraph() {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         fitView
-        className="bg-[#08090B]"
+        className="bg-[#17130F]"
         colorMode="dark"
       >
-        <Controls showInteractive={false} className="!bg-[#12151A] !border-[#20242B]" />
+        <Controls showInteractive={false} className="!bg-[#2A221B] !border-[#514236] !text-[#F5EFE5] !rounded-xl overflow-hidden" />
         <MiniMap 
-          nodeColor="#20242B" 
-          maskColor="rgba(8, 9, 11, 0.7)"
-          className="!bg-[#0D0F12] !border-[#20242B]"
+          nodeColor="#514236" 
+          maskColor="rgba(23, 19, 15, 0.75)"
+          className="!bg-[#211B16] !border-[#514236] !rounded-xl"
         />
-        <Background gap={16} size={1} color="#20242B" />
+        <Background gap={18} size={1} color="#514236" />
       </ReactFlow>
     </div>
   );

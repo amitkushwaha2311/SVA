@@ -22,8 +22,6 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // POST /api/auth/signup → proxied via Next.js rewrite →
-      // backend POST /auth/signup (the actual registration endpoint)
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,7 +38,6 @@ export default function SignupPage() {
         throw new Error(data.detail || "Signup failed");
       }
 
-      // Signup already creates a session cookie — re-hydrate auth state
       await login();
       router.push("/");
     } catch (err: any) {
@@ -51,70 +48,87 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#08090B] flex flex-col justify-center items-center p-6">
-      <div className="w-full max-w-sm space-y-8">
+    <div className="min-h-screen bg-[#17130F] flex flex-col justify-center items-center p-6 relative overflow-hidden">
+      {/* Subtle ambient luxury glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#F4D9A0]/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="w-full max-w-sm space-y-8 relative z-10">
         <div className="flex flex-col items-center text-center">
-          <div className="w-12 h-12 bg-[#12151A] border border-[#20242B] rounded-lg flex items-center justify-center mb-6">
-            <Box className="w-6 h-6 text-[#F5F7FA]" />
+          <div className="w-14 h-14 bg-[#211B16] border border-[#514236] rounded-2xl flex items-center justify-center mb-6 shadow-xl">
+            <Box className="w-7 h-7 text-[#F4D9A0]" />
           </div>
-          <h1 className="text-2xl font-sans tracking-tight text-[#F5F7FA]">Create an Account</h1>
-          <p className="text-sm font-mono text-[#5F6773] mt-2">Semantic Verification &amp; Assurance</p>
+          <h1 className="text-3xl font-serif tracking-tight text-[#F5EFE5]">Create an Account</h1>
+          <p className="text-xs font-mono text-[#B5AA9C] mt-2 tracking-wide uppercase">
+            Semantic Verification &amp; Assurance
+          </p>
         </div>
 
-        <div className="bg-[#0D0F12] border border-[#20242B] rounded-lg p-6 shadow-2xl">
+        <div className="bg-[#211B16] border border-[#514236] rounded-2xl p-7 shadow-2xl backdrop-blur-md">
           <form onSubmit={handleSignup} className="space-y-4">
             {error && (
-              <div className="p-3 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded flex items-start gap-3">
+              <div className="p-3 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-xl flex items-start gap-3">
                 <AlertCircle className="w-4 h-4 text-[#EF4444] shrink-0 mt-0.5" />
                 <p className="text-sm text-[#EF4444]">{error}</p>
               </div>
             )}
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-mono text-[#5F6773] uppercase tracking-widest block">Display Name</label>
+              <label className="text-[10px] font-mono text-[#B5AA9C] uppercase tracking-widest block font-medium">
+                Display Name
+              </label>
               <input
                 id="signup-display-name"
                 type="text"
                 required
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
-                className="w-full bg-[#12151A] border border-[#20242B] rounded px-3 py-2 text-sm text-[#F5F7FA] outline-none focus:border-[#5F6773] transition-colors"
+                placeholder="Ada Lovelace"
+                className="w-full bg-[#2A221B] border border-[#514236] rounded-xl px-3.5 py-2.5 text-sm text-[#F5EFE5] placeholder:text-[#847768] outline-none focus:border-[#F4D9A0] focus:ring-1 focus:ring-[#F4D9A0]/30 transition-all font-sans"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-mono text-[#5F6773] uppercase tracking-widest block">Email</label>
+              <label className="text-[10px] font-mono text-[#B5AA9C] uppercase tracking-widest block font-medium">
+                Email Address
+              </label>
               <input
                 id="signup-email"
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full bg-[#12151A] border border-[#20242B] rounded px-3 py-2 text-sm text-[#F5F7FA] outline-none focus:border-[#5F6773] transition-colors"
+                placeholder="developer@domain.com"
+                className="w-full bg-[#2A221B] border border-[#514236] rounded-xl px-3.5 py-2.5 text-sm text-[#F5EFE5] placeholder:text-[#847768] outline-none focus:border-[#F4D9A0] focus:ring-1 focus:ring-[#F4D9A0]/30 transition-all font-sans"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-mono text-[#5F6773] uppercase tracking-widest block">Password</label>
+              <label className="text-[10px] font-mono text-[#B5AA9C] uppercase tracking-widest block font-medium">
+                Password
+              </label>
               <input
                 id="signup-password"
                 type="password"
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full bg-[#12151A] border border-[#20242B] rounded px-3 py-2 text-sm text-[#F5F7FA] outline-none focus:border-[#5F6773] transition-colors"
+                placeholder="••••••••••••"
+                className="w-full bg-[#2A221B] border border-[#514236] rounded-xl px-3.5 py-2.5 text-sm text-[#F5EFE5] placeholder:text-[#847768] outline-none focus:border-[#F4D9A0] focus:ring-1 focus:ring-[#F4D9A0]/30 transition-all font-sans"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-mono text-[#5F6773] uppercase tracking-widest block">Workspace Name</label>
+              <label className="text-[10px] font-mono text-[#B5AA9C] uppercase tracking-widest block font-medium">
+                Workspace Name
+              </label>
               <input
                 id="signup-workspace-name"
                 type="text"
                 required
                 value={workspaceName}
                 onChange={e => setWorkspaceName(e.target.value)}
-                className="w-full bg-[#12151A] border border-[#20242B] rounded px-3 py-2 text-sm text-[#F5F7FA] outline-none focus:border-[#5F6773] transition-colors"
+                placeholder="Primary Engineering"
+                className="w-full bg-[#2A221B] border border-[#514236] rounded-xl px-3.5 py-2.5 text-sm text-[#F5EFE5] placeholder:text-[#847768] outline-none focus:border-[#F4D9A0] focus:ring-1 focus:ring-[#F4D9A0]/30 transition-all font-sans"
               />
             </div>
 
@@ -122,16 +136,16 @@ export default function SignupPage() {
               id="signup-submit"
               type="submit"
               disabled={loading}
-              className="w-full bg-[#F5F7FA] text-[#08090B] font-medium text-sm py-2 rounded hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
+              className="w-full bg-[#F4D9A0] text-[#17130F] font-semibold text-sm py-2.5 rounded-xl hover:bg-[#fae6bb] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6 shadow-md shadow-[#F4D9A0]/10 active:scale-95"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin text-[#17130F]" /> : "Sign Up"}
             </button>
           </form>
         </div>
 
         <div className="text-center">
-          <p className="text-sm text-[#5F6773]">
-            Already have an account? <Link href="/login" className="text-[#F5F7FA] hover:underline">Sign in</Link>
+          <p className="text-sm text-[#B5AA9C]">
+            Already have an account? <Link href="/login" className="text-[#F4D9A0] hover:underline font-medium ml-1">Sign in</Link>
           </p>
         </div>
       </div>

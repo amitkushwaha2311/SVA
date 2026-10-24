@@ -33,7 +33,6 @@ const COMMANDS: Command[] = [
 /**
  * Open the command palette programmatically from any component.
  * Dispatches a custom event that CommandPalette listens to.
- * This avoids faking a keyboard event (which browsers may flag as non-trusted).
  */
 export function openCommandPalette() {
   window.dispatchEvent(new CustomEvent("sva:open-search"));
@@ -151,64 +150,67 @@ export function CommandPalette() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-[20vh]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center pt-[18vh] p-4"
             onClick={() => setOpen(false)}
           >
             <motion.div
               key="palette"
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
+              initial={{ opacity: 0, scale: 0.98, y: -6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: -6 }}
               transition={{ duration: 0.15 }}
-              className="w-[560px] bg-[#0D0F12] border border-[#20242B] rounded-lg shadow-2xl overflow-hidden"
+              className="w-full max-w-[580px] bg-[#211B16] border border-[#514236] rounded-xl shadow-2xl overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-[#20242B]">
-                <Search className="w-4 h-4 text-[#5F6773] shrink-0" />
+              <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#514236] bg-[#2A221B]/40">
+                <Search className="w-4 h-4 text-[#F4D9A0] shrink-0" />
                 <input
                   ref={inputRef}
                   value={query}
                   onChange={e => { setQuery(e.target.value); setSelected(0); }}
                   onKeyDown={handleKey}
-                  placeholder="Search pages, requirements, evidence..."
-                  className="flex-1 bg-transparent text-[#F5F7FA] text-sm outline-none placeholder:text-[#5F6773] font-mono"
+                  placeholder="Search pages, requirements, evidence, verification..."
+                  className="flex-1 bg-transparent text-[#F5EFE5] text-sm outline-none placeholder:text-[#B5AA9C]/60"
                 />
-                <kbd className="text-[10px] font-mono text-[#5F6773] border border-[#20242B] rounded px-1.5 py-0.5">ESC</kbd>
+                <kbd className="text-[10px] font-mono text-[#B5AA9C] border border-[#514236] bg-[#2A221B] rounded px-1.5 py-0.5 shadow-sm">ESC</kbd>
               </div>
 
-              <div className="max-h-[400px] overflow-y-auto py-2">
+              <div className="max-h-[380px] overflow-y-auto py-2">
                 {isLoading ? (
                   <div className="px-4 py-8 text-center flex flex-col items-center justify-center">
-                    <Loader2 className="w-5 h-5 text-[#5F6773] animate-spin mb-2" />
-                    <span className="text-sm text-[#5F6773] font-mono">Searching workspace...</span>
+                    <Loader2 className="w-5 h-5 text-[#F4D9A0] animate-spin mb-2" />
+                    <span className="text-xs text-[#B5AA9C] font-mono">Searching workspace...</span>
                   </div>
                 ) : isError ? (
                   <div className="px-4 py-8 text-center flex flex-col items-center justify-center text-[#EF4444]">
                     <AlertCircle className="w-5 h-5 mb-2" />
-                    <span className="text-sm font-mono">Failed to search</span>
+                    <span className="text-xs font-mono">Failed to search</span>
                   </div>
                 ) : allFiltered.length === 0 ? (
-                  <div className="px-4 py-8 text-center text-sm text-[#5F6773] font-mono">No results found</div>
+                  <div className="px-4 py-8 text-center text-xs text-[#B5AA9C] font-mono">No results found</div>
                 ) : groups.map(group => (
-                  <div key={group}>
-                    <div className="px-4 py-2 text-[10px] font-mono uppercase tracking-widest text-[#5F6773]">{group}</div>
+                  <div key={group} className="mb-2 last:mb-0">
+                    <div className="px-4 py-1.5 text-[10px] font-mono uppercase tracking-widest text-[#B5AA9C]/70">{group}</div>
                     {allFiltered.filter(c => c.group === group).map(cmd => {
                       const idx = flatIdx++;
+                      const isSelected = selected === idx;
                       return (
                         <button
                           key={cmd.id}
                           onClick={() => execute(cmd)}
                           onMouseEnter={() => setSelected(idx)}
                           className={cn(
-                            "w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors",
-                            selected === idx ? "bg-[#12151A] text-[#F5F7FA]" : "text-[#8B93A1]"
+                            "w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors text-sm",
+                            isSelected 
+                              ? "bg-[#2A221B] text-[#F4D9A0]" 
+                              : "text-[#B5AA9C] hover:text-[#F5EFE5] hover:bg-[#2A221B]/40"
                           )}
                         >
-                          <span className={cn("shrink-0", selected === idx ? "text-[#F5F7FA]" : "text-[#5F6773]")}>
+                          <span className={cn("shrink-0", isSelected ? "text-[#F4D9A0]" : "text-[#B5AA9C]")}>
                             {cmd.icon}
                           </span>
-                          <span className="text-sm flex-1 truncate">{cmd.label}</span>
-                          <ChevronRight className={cn("w-3.5 h-3.5 transition-opacity shrink-0", selected === idx ? "opacity-100" : "opacity-0")} />
+                          <span className="flex-1 truncate">{cmd.label}</span>
+                          <ChevronRight className={cn("w-3.5 h-3.5 transition-opacity shrink-0", isSelected ? "opacity-100 text-[#F4D9A0]" : "opacity-0")} />
                         </button>
                       );
                     })}
@@ -216,10 +218,10 @@ export function CommandPalette() {
                 ))}
               </div>
 
-              <div className="px-4 py-2 border-t border-[#20242B] flex gap-4 text-[10px] font-mono text-[#5F6773]">
-                <span><kbd className="border border-[#20242B] rounded px-1">↑↓</kbd> Navigate</span>
-                <span><kbd className="border border-[#20242B] rounded px-1">↵</kbd> Select</span>
-                <span><kbd className="border border-[#20242B] rounded px-1">ESC</kbd> Close</span>
+              <div className="px-4 py-2.5 border-t border-[#514236] flex gap-4 text-[10px] font-mono text-[#B5AA9C] bg-[#17130F]/40">
+                <span><kbd className="border border-[#514236] bg-[#2A221B] rounded px-1 text-[9px]">↑↓</kbd> Navigate</span>
+                <span><kbd className="border border-[#514236] bg-[#2A221B] rounded px-1 text-[9px]">↵</kbd> Select</span>
+                <span><kbd className="border border-[#514236] bg-[#2A221B] rounded px-1 text-[9px]">ESC</kbd> Close</span>
               </div>
             </motion.div>
           </motion.div>

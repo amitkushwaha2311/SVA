@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, JetBrains_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono, Cormorant_Garamond } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -11,6 +11,12 @@ const geistSans = Geist({
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${jetBrainsMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${jetBrainsMono.variable} ${cormorantGaramond.variable} antialiased min-h-screen flex flex-col bg-[#17130F] text-[#F5EFE5]`}
       >
         <Providers>
           {children}

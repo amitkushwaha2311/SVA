@@ -1,33 +1,84 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #08090B;
-  --color-surface: #0D0F12;
-  --color-elevated: #12151A;
-  --color-border: #20242B;
-  --color-primary: #F5F7FA;
-  --color-secondary: #8B93A1;
-  --color-muted: #5F6773;
+  --color-background: #17130F;
+  --color-surface: #211B16;
+  --color-elevated: #2A221B;
+  --color-border: #514236;
+  --color-primary: #F5EFE5;
+  --color-secondary: #B5AA9C;
+  --color-muted: #847768;
+
+  --color-mocha: #5B4632;
+  --color-champagne: #F4D9A0;
+  --color-amber: #C8792C;
 
   --color-sva-proven: #10B981;
   --color-sva-supported: #06B6D4;
   --color-sva-violated: #EF4444;
   --color-sva-warning: #F59E0B;
-  --color-sva-unknown: #8B5CF6;
-  --color-sva-inconclusive: #9333EA;
-  --color-sva-stale: #D97706;
+  --color-sva-unknown: #9CA3AF;
+  --color-sva-inconclusive: #F59E0B;
+  --color-sva-stale: #C084FC;
   --color-sva-blocked: #DC2626;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-serif: var(--font-cormorant), "Times New Roman", Georgia, serif;
+  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "SFMono-Regular", Consolas, monospace;
 }
 
 @layer base {
+  :root {
+    --bg-espresso: #17130F;
+    --surface-warm: #211B16;
+    --surface-elevated: #2A221B;
+    --border-warm: #514236;
+    --text-primary: #F5EFE5;
+    --text-secondary: #B5AA9C;
+    --text-muted: #847768;
+    --color-mocha: #5B4632;
+    --color-champagne: #F4D9A0;
+    --color-amber: #C8792C;
+  }
+
   body {
-    background-color: var(--color-background);
-    color: var(--color-primary);
+    background-color: #17130F;
+    color: #F5EFE5;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    selection-background-color: #5B4632;
+    selection-color: #F4D9A0;
   }
+
+  ::selection {
+    background: rgba(244, 217, 160, 0.25);
+    color: #F5EFE5;
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #17130F;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #514236;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5B4632;
+  }
+}
+
+/* React Flow Mocha / Espresso Theme */
+.react-flow-dark {
+  --xy-edge-stroke: #514236;
+  --xy-edge-stroke-selected: #F4D9A0;
+  --xy-connectionline-stroke: #F4D9A0;
+  --xy-node-background: #211B16;
+  --xy-node-border: #514236;
+  --xy-node-color: #F5EFE5;
 }
