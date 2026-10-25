@@ -272,7 +272,7 @@ describe('Routing and Layout separation', () => {
   it('public landing page contains no sidebar or workspace toolbar', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8');
+    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8').replace(/\r\n/g, '\n');
 
     // Extract the unauthenticated public branch block: if (!user) { ... }
     const publicBranchMatch = pageContent.match(/if\s*\(!user\)\s*\{([\s\S]*?)\n\s*\}\n\s*\/\/\s*──\s*Authenticated/);
@@ -292,7 +292,7 @@ describe('Routing and Layout separation', () => {
   it('authenticated dashboard routes use Shell and handle missing workspace safely', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8');
+    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8').replace(/\r\n/g, '\n');
 
     // Authenticated missing workspace branch must wrap in <Shell>
     expect(pageContent).toContain('if (!activeWorkspace)');
@@ -312,7 +312,7 @@ describe('Routing and Layout separation', () => {
   it('Shell enforces authentication and redirects unauthenticated users to /login', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    const shellContent = fs.readFileSync(path.resolve(__dirname, '../components/layout/Shell.tsx'), 'utf-8');
+    const shellContent = fs.readFileSync(path.resolve(__dirname, '../components/layout/Shell.tsx'), 'utf-8').replace(/\r\n/g, '\n');
 
     expect(shellContent).toContain('useAuth()');
     expect(shellContent).toContain('useRouter()');
@@ -322,7 +322,7 @@ describe('Routing and Layout separation', () => {
   it('public landing page includes all core sections and allows natural scrolling', async () => {
     const fs = await import('fs');
     const path = await import('path');
-    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8');
+    const pageContent = fs.readFileSync(path.resolve(__dirname, '../app/page.tsx'), 'utf-8').replace(/\r\n/g, '\n');
 
     const publicBranchMatch = pageContent.match(/if\s*\(!user\)\s*\{([\s\S]*?)\n\s*\}\n\s*\/\/\s*──\s*Authenticated/);
     expect(publicBranchMatch).not.toBeNull();

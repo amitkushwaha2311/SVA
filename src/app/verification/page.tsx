@@ -195,9 +195,9 @@ export default function VerificationPage() {
               {selectedReq.decision === "UNKNOWN" && (
                 <div className="mt-8 border border-[#514236] bg-[#211B16] rounded-2xl p-6 shadow-xl">
                   <div className="flex items-start gap-3.5">
-                    <AlertTriangle className="w-5 h-5 text-[#F4D9A0] shrink-0 mt-0.5" />
+                    <AlertTriangle className="w-5 h-5 text-[#9CA3AF] shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="font-mono text-xs tracking-widest text-[#F4D9A0] uppercase mb-2 font-medium">Why Unknown?</h4>
+                      <h4 className="font-mono text-xs tracking-widest text-[#9CA3AF] uppercase mb-2 font-medium">Why Unknown?</h4>
                       <div className="text-sm text-[#B5AA9C] space-y-4 leading-relaxed">
                         <p>Required behavioral evidence is unavailable in the current environment.</p>
                         {selectedReq.limitations && selectedReq.limitations.length > 0 && (
@@ -210,6 +210,73 @@ export default function VerificationPage() {
                         )}
                         <p className="font-mono text-xs text-[#9CA3AF] mt-4 uppercase tracking-widest pt-4 border-t border-[#514236]">
                           Therefore: UNKNOWN
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {selectedReq.decision === "INCONCLUSIVE" && (
+                <div className="mt-8 border border-[#F59E0B]/30 bg-[#211B16] rounded-2xl p-6 shadow-xl">
+                  <div className="flex items-start gap-3.5">
+                    <AlertTriangle className="w-5 h-5 text-[#F59E0B] shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-mono text-xs tracking-widest text-[#F59E0B] uppercase mb-2 font-medium">Why Inconclusive?</h4>
+                      <div className="text-sm text-[#B5AA9C] space-y-4 leading-relaxed">
+                        <p>Evidence gathered consists of static code mappings or candidate references that do not definitively verify behavioral execution.</p>
+                        {selectedReq.limitations && selectedReq.limitations.length > 0 && (
+                           <div className="mt-4 space-y-2 bg-[#2A221B] border border-[#514236] p-4 rounded-xl">
+                             <span className="block text-[10px] font-mono text-[#847768] mb-1 uppercase tracking-widest">Recorded Limitations:</span>
+                             {selectedReq.limitations.map((lim, idx) => (
+                               <div key={idx} className="text-[#F5EFE5] text-xs font-mono">• {lim}</div>
+                             ))}
+                           </div>
+                        )}
+                        <p className="font-mono text-xs text-[#F59E0B] mt-4 uppercase tracking-widest pt-4 border-t border-[#514236]">
+                          Therefore: INCONCLUSIVE
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {selectedReq.decision === "VIOLATED" && (
+                <div className="mt-8 border border-[#EF4444]/30 bg-[#211B16] rounded-2xl p-6 shadow-xl">
+                  <div className="flex items-start gap-3.5">
+                    <XCircle className="w-5 h-5 text-[#EF4444] shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-mono text-xs tracking-widest text-[#EF4444] uppercase mb-2 font-medium">Violation Detected</h4>
+                      <div className="text-sm text-[#B5AA9C] space-y-4 leading-relaxed">
+                        <p>Contradicting execution evidence was observed during verification of this contract.</p>
+                        {selectedReq.limitations && selectedReq.limitations.length > 0 && (
+                           <div className="mt-4 space-y-2 bg-[#2A221B] border border-[#514236] p-4 rounded-xl">
+                             <span className="block text-[10px] font-mono text-[#847768] mb-1 uppercase tracking-widest">Recorded Limitations:</span>
+                             {selectedReq.limitations.map((lim, idx) => (
+                               <div key={idx} className="text-[#F5EFE5] text-xs font-mono">• {lim}</div>
+                             ))}
+                           </div>
+                        )}
+                        <p className="font-mono text-xs text-[#EF4444] mt-4 uppercase tracking-widest pt-4 border-t border-[#514236]">
+                          Therefore: VIOLATED
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(selectedReq.decision === "PROVEN" || selectedReq.decision === "SUPPORTED") && (
+                <div className="mt-8 border border-[#10B981]/30 bg-[#211B16] rounded-2xl p-6 shadow-xl">
+                  <div className="flex items-start gap-3.5">
+                    <CheckCircle2 className="w-5 h-5 text-[#10B981] shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-mono text-xs tracking-widest text-[#10B981] uppercase mb-2 font-medium">Assurance Established</h4>
+                      <div className="text-sm text-[#B5AA9C] space-y-4 leading-relaxed">
+                        <p>Supporting behavioral evidence has formally satisfied the obligations for this requirement.</p>
+                        <p className="font-mono text-xs text-[#10B981] mt-4 uppercase tracking-widest pt-4 border-t border-[#514236]">
+                          Therefore: {selectedReq.decision}
                         </p>
                       </div>
                     </div>
