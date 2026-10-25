@@ -12,6 +12,7 @@ from app.contracts.ids import (
     generate_invariant_id,
     generate_target_id,
 )
+from app.evidence.ids import generate_obligation_id
 from app.contracts.models import (
     BehaviorExpectation,
     ContractAssumption,
@@ -83,8 +84,10 @@ class SemanticContractCompiler:
 
         # Allowed behaviors: derived from actor/action/resource if available
         allowed = []
+        ob_id_for_allowed = None
         if requirement.actor and requirement.action and requirement.resource:
             b_desc = f"{requirement.actor.name} performs {requirement.action.name} on {requirement.resource.name}"
+            ob_id_for_allowed = generate_obligation_id(contract_id, b_desc)
             allowed.append(BehaviorExpectation(
                 behavior_id=generate_behavior_id(contract_id, b_desc),
                 description=b_desc,
@@ -146,7 +149,9 @@ class SemanticContractCompiler:
                 category=VerificationTargetCategory.BEHAVIOR,
                 description=desc,
                 code_entity_ref=first_entity_ref,
+                obligation_id=ob_id_for_allowed,
             ))
+
 
         contract = SemanticContract(
             contract_id=contract_id,

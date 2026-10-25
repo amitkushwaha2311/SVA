@@ -8,10 +8,10 @@ class VerificationMapper:
             obligation_id=domain.obligation_id,
             contract_id=domain.contract_id,
             requirement_id=domain.requirement_id,
-            decision=domain.decision.value,
+            decision=domain.decision.value if hasattr(domain.decision, "value") else str(domain.decision),
             explanation=domain.explanation,
-            supporting_evidence=[e.model_dump() for e in domain.supporting_evidence],
-            contradicting_evidence=[e.model_dump() for e in domain.contradicting_evidence]
+            supporting_evidence=[e.model_dump() if hasattr(e, "model_dump") else e for e in domain.supporting_evidence],
+            contradicting_evidence=[e.model_dump() if hasattr(e, "model_dump") else e for e in domain.contradicting_evidence]
         )
 
     @staticmethod
@@ -20,10 +20,10 @@ class VerificationMapper:
             id=f"{domain.requirement_id}_{domain.contract_id}",
             requirement_id=domain.requirement_id,
             contract_id=domain.contract_id,
-            decision=domain.decision.value,
+            decision=domain.decision.value if hasattr(domain.decision, "value") else str(domain.decision),
             explanation=domain.explanation,
             limitations=domain.limitations,
-            obligation_results=[r.model_dump() for r in domain.obligation_results],
+            obligation_results=[r.model_dump() if hasattr(r, "model_dump") else r for r in domain.obligation_results],
             unresolved_obligations=domain.unresolved_obligations
         )
         return row
@@ -36,5 +36,5 @@ class VerificationMapper:
             commit_id=domain.commit_id,
             generated_at=domain.generated_at,
             engine_version=domain.engine_version,
-            requirement_results=[r.model_dump() for r in domain.requirement_results]
+            requirement_results=[r.model_dump() if hasattr(r, "model_dump") else r for r in domain.requirement_results]
         )

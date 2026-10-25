@@ -82,13 +82,14 @@ class ExecutionRequest(BaseModel):
     """
     execution_id: str
     contract_id: str
-    obligation_id: str
+    obligation_id: str | None = None
     target_id: str
     repository_id: str
     commit_id: str
     job_id: str | None = None
     analysis_id: str | None = None
     snapshot_id: str | None = None
+
 
     command: list[str]  # Always array, never shell string
     working_directory: str

@@ -5,7 +5,7 @@ SVA Semantic Verifier
 Core engine that evaluates evidence against SemanticContracts.
 """
 
-from app.contracts.models import ContractStatus, SemanticContract
+from app.contracts.models import ContractStatus, SemanticContract, VerificationTargetCategory
 from app.evidence.ids import generate_obligation_id
 from app.evidence.models import Evidence, VerificationState
 from app.verification.aggregator import RequirementAggregator
@@ -44,9 +44,6 @@ class SemanticVerifier:
 
         obligation_results: list[ObligationVerification] = []
 
-        # We collect all obligations (positive, negative, invariants)
-        # Note: In Phase 8/9, we used generate_obligation_id based on behavior descriptions.
-        
         all_obligations = []
         for b in contract.allowed_behaviors:
             ob_id = generate_obligation_id(contract.contract_id, b.description)
@@ -64,25 +61,43 @@ class SemanticVerifier:
         )
 
         for ob_id, behavior in all_obligations:
-            # Evidence matching this obligation (in Phase 9, ExecutionRequest links target/contract, 
-            # ideally the evidence is linked to obligation_id. For now, since Phase 8 captures evidence
-            # with description / target_id, we just evaluate all valid evidence for this contract.
-            # In a robust implementation, evidence would have `obligation_id`).
-            # We assume valid_ev is the subset of evidence relevant to THIS obligation.
-            # We filter it by assuming evidence description or some target ref links it, 
-            # but to keep it simple and deterministic for Phase 10: we pass valid_ev and let rules evaluate.
-            
-            # To strictly separate positive/negative in this mockup without breaking Phase 8:
-            # We simulate filtering by `expected_outcome` if evidence carried it, or by test intent.
-            # For this Phase, we'll assume the caller passes the right evidence list per obligation,
-            # or we evaluate based on a mock matching. 
-            # Let's say evidence descriptions distinguish them.
-            
-            # Match evidence to obligation (naive matching for foundation)
-            # In a robust implementation, evidence would carry the explicit obligation_id.
-            ob_valid = [e for e in valid_ev if behavior.description in e.description or (behavior.action and behavior.action in e.description)]
+            # Build explicit, validated target mapping for THIS specific obligation:
+            # 1. Target directly stores this obligation_id
+            # 2. Or target category is BEHAVIOR and its action/resource matches this behavior
+            # 3. Or target description explicitly matches this behavior
+            mapped_target_ids = {
+                t.target_id for t in contract.verification_targets
+                if getattr(t, "obligation_id", None) == ob_id
+                or (
+                    t.category == VerificationTargetCategory.BEHAVIOR
+                    and behavior.action
+                    and behavior.resource
+                    and t.description == f"Verify {behavior.action} on {behavior.resource}"
+                )
+                or (
+                    t.category == VerificationTargetCategory.BEHAVIOR
+                    and t.description in (f"Verify {behavior.description}", behavior.description)
+                )
+            }
+
+            # Associate evidence with this obligation:
+            # 1. Prefer exact obligation_id match.
+            # 2. Otherwise use explicit, validated mapping between specific verification target and obligation.
+            # 3. For targetless/obligationless evidence, fall back to exact behavior description match.
+            ob_valid = []
+            for e in valid_ev:
+                if getattr(e, "obligation_id", None) is not None:
+                    if e.obligation_id == ob_id:
+                        ob_valid.append(e)
+                elif e.target_refs:
+                    if any(t_id in mapped_target_ids for t_id in e.target_refs):
+                        ob_valid.append(e)
+                else:
+                    if e.description in (behavior.description, f"FORBIDDEN: {behavior.description}"):
+                        ob_valid.append(e)
 
             decision, supporting, contradicting = self.evaluator.evaluate(behavior, ob_valid)
+
 
             explanation = generate_obligation_explanation(
                 obligation_id=ob_id,

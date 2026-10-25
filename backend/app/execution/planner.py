@@ -30,11 +30,12 @@ class VerificationPlanner:
     def plan(
         self,
         contract: SemanticContract,
-        obligation_id: str,
+        obligation_id: str | None,
         target_id: str,
         repository_id: str,
         commit_id: str,
         test_file: str,
+
         command_id: str = "pytest",
         expected_outcome: str = "PASS",
         job_id: str | None = None,
@@ -42,7 +43,7 @@ class VerificationPlanner:
         snapshot_id: str | None = None,
     ) -> ExecutionRequest | None:
         """
-        Creates an ExecutionRequest if the contract is READY and target/obligation exist.
+        Creates an ExecutionRequest if the contract is READY and target exists.
         Returns None if planning fails (e.g. invalid inputs, blocked contract).
         """
         # 1. Contract must be READY
@@ -81,13 +82,15 @@ class VerificationPlanner:
         command = base_cmd + [test_file]
 
         # Generate deterministic-ish execution ID for traceability
-        identity = f"{repository_id}:{contract.contract_id}:{obligation_id}:{target_id}:{commit_id}:{command_id}:{test_file}"
+        ob_key = obligation_id or "unassigned"
+        identity = f"{repository_id}:{contract.contract_id}:{ob_key}:{target_id}:{commit_id}:{command_id}:{test_file}"
         execution_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
 
         return ExecutionRequest(
             execution_id=execution_id,
             contract_id=contract.contract_id,
             obligation_id=obligation_id,
+
             target_id=target_id,
             repository_id=repository_id,
             commit_id=commit_id,

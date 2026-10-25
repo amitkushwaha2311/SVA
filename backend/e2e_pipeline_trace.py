@@ -261,35 +261,49 @@ async def main():
 
         # Persist SemanticRequirement (set analysis_id to trace)
         from app.persistence.mappers.semantic_ir_mapper import SemanticIRMapper
+        from app.persistence.models.semantic_ir import SemanticRequirementRow
         req.analysis_id = trace_analysis_id
-        req_row = SemanticIRMapper.req_to_row(req)
-        db.add(req_row)
+        existing_req = await db.get(SemanticRequirementRow, req.requirement_id)
+        if not existing_req:
+            db.add(SemanticIRMapper.req_to_row(req))
+        else:
+            existing_req.analysis_id = trace_analysis_id
 
         # Persist contract
         from app.persistence.mappers.contract_mapper import ContractMapper
         from app.contracts.ids import generate_contract_id
         contract.analysis_id = trace_analysis_id
-        db.add(ContractMapper.contract_to_row(contract))
-        for b in contract.allowed_behaviors:
-            db.add(ContractMapper.behavior_to_row(contract.contract_id, b))
-        for t in contract.verification_targets:
-            db.add(ContractMapper.target_to_row(contract.contract_id, t))
-        for a in contract.assumptions:
-            db.add(ContractMapper.assumption_to_row(contract.contract_id, a))
-        for inv in contract.invariants:
-            db.add(ContractMapper.invariant_to_row(contract.contract_id, inv))
+        existing_contract = await db.get(SemanticContractRow, contract.contract_id)
+        if not existing_contract:
+            db.add(ContractMapper.contract_to_row(contract))
+            for b in contract.allowed_behaviors:
+                db.add(ContractMapper.behavior_to_row(contract.contract_id, b))
+            for t in contract.verification_targets:
+                db.add(ContractMapper.target_to_row(contract.contract_id, t))
+            for a in contract.assumptions:
+                db.add(ContractMapper.assumption_to_row(contract.contract_id, a))
+            for inv in contract.invariants:
+                db.add(ContractMapper.invariant_to_row(contract.contract_id, inv))
+        else:
+            existing_contract.analysis_id = trace_analysis_id
 
         # Persist evidence
         from app.persistence.mappers.evidence_mapper import EvidenceMapper
+        seen_ev_ids = set()
         for ev in evidence_items:
-            ev_row = EvidenceMapper.to_row(ev)
-            db.add(ev_row)
+            if ev.evidence_id in seen_ev_ids:
+                continue
+            seen_ev_ids.add(ev.evidence_id)
+            existing_ev = await db.get(EvidenceRow, ev.evidence_id)
+            if not existing_ev:
+                db.add(EvidenceMapper.to_row(ev))
 
         # Persist verification
         persisted_vr_id = None
         if v_result:
             from app.verification.models import VerificationReport
             from app.persistence.mappers.verification_mapper import VerificationMapper
+            from app.persistence.models.verification import ObligationVerificationRow, RequirementVerificationRow
             report = VerificationReport(
                 verification_id=f"vr-{trace_analysis_id}",
                 repository_id=repository_id,
@@ -299,14 +313,25 @@ async def main():
                 requirement_results=[v_result],
             )
             db.add(VerificationMapper.report_to_row(report))
-            db.add(VerificationMapper.req_to_row(v_result))
+            req_id_key = f"{v_result.requirement_id}_{v_result.contract_id}"
+            existing_req_v = await db.get(RequirementVerificationRow, req_id_key)
+            if not existing_req_v:
+                db.add(VerificationMapper.req_to_row(v_result))
+            else:
+                existing_req_v.decision = v_result.decision.value if hasattr(v_result.decision, "value") else str(v_result.decision)
+                existing_req_v.explanation = v_result.explanation
             for obl in v_result.obligation_results:
-                db.add(VerificationMapper.obl_to_row(obl))
+                existing_obl = await db.get(ObligationVerificationRow, obl.obligation_id)
+                if not existing_obl:
+                    db.add(VerificationMapper.obl_to_row(obl))
+                else:
+                    existing_obl.decision = obl.decision.value if hasattr(obl.decision, "value") else str(obl.decision)
+                    existing_obl.explanation = obl.explanation
             persisted_vr_id = report.verification_id
 
-        # await db.commit()
+        await db.commit()
 
-        # â”€â”€ Final Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # ─── Final Summary ──────────────────────────────────────────
         print("\n" + "=" * 60)
         print("PERSISTED CHAIN")
         print("=" * 60)

@@ -74,6 +74,8 @@ class VerificationTarget(BaseModel):
     category: VerificationTargetCategory
     description: str
     code_entity_ref: str | None = None  # Candidate Phase-3 entity ID, NOT verified match
+    obligation_id: str | None = None    # Explicit link to the obligation it verifies, if known
+
 
 
 class SemanticContract(BaseModel):

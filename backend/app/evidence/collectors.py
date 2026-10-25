@@ -75,6 +75,7 @@ class StaticEvidenceCollector:
                     contract_id=contract.contract_id,
                     requirement_id=contract.requirement_id,
                     repository_id=repository_id,
+                    obligation_id=getattr(target, "obligation_id", None),
                     evidence_type=EvidenceType.CODE_MAPPING,
                     verification_method=VerificationMethod.STATIC_ANALYSIS,
                     description=description,
@@ -95,6 +96,7 @@ class StaticEvidenceCollector:
                     provenance=Provenance.CODE,
                     collected_at=datetime.now(timezone.utc).isoformat(),
                 )
+
 
                 # Attach integrity hash
                 h = compute_evidence_hash(ev)
@@ -221,9 +223,11 @@ class EvidenceCollector:
                 # Planner validates and rejects None / unsafe values itself.
                 test_file = target.code_entity_ref
 
+                real_obligation_id = getattr(target, "obligation_id", None)
+
                 request = self.planner.plan(
                     contract=contract,
-                    obligation_id="derived-obligation-id",  # Placeholder
+                    obligation_id=real_obligation_id,
                     target_id=target.target_id,
                     repository_id=repository_id,
                     commit_id=commit_id,
@@ -234,6 +238,7 @@ class EvidenceCollector:
                     analysis_id=analysis_id,
                     snapshot_id=snapshot_id,
                 )
+
 
                 if request:
                     backend.create()
